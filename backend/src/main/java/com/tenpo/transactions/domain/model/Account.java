@@ -1,27 +1,14 @@
 package com.tenpo.transactions.domain.model;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Entity
+@Data
 public class Account {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String tenpistaName;
-
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
-    private List<Transaction> transactions;
+    private String username;
+    private String password;
     private LocalDateTime createdAt;
     private boolean active;
 }
