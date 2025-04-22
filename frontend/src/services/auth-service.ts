@@ -1,27 +1,20 @@
-import axios, { AxiosError } from "axios";
+import { api } from "@/services/api.ts"
+import {AxiosError} from "axios";
 
-const API_URL = 'http://localhost:8080/';
-const SIGNIN_ENDPOINT = "/auth/login";
+import {
+    RegisterRequest,
+    RegisterResponse,
+    LoginRequest,
+    LoginResponse
+} from "@/interfaces/auth-interface.ts";
+import {
+    SIGNING_URL,
+    SIGNUP_URL
+} from "@/constants/endpoints.ts";
 
-export interface LoginResponse {
-    token: string;
-}
-
-export interface LoginCredentials {
-    username: string;
-    password: string;
-}
-
-const api = axios.create({
-    baseURL: API_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    }
-});
-
-export const login = async (credentials: LoginCredentials): Promise<LoginResponse> => {
+export const login = async (credentials: LoginRequest): Promise<LoginResponse> => {
     try {
-        const response = await api.post(SIGNIN_ENDPOINT, credentials);
+        const response = await api.post(SIGNING_URL, credentials);
         const { token } = response.data;
         localStorage.setItem('token', token);
         return response.data;
@@ -33,11 +26,21 @@ export const login = async (credentials: LoginCredentials): Promise<LoginRespons
     }
 };
 
+export const register = async (credentials: RegisterRequest): Promise<RegisterResponse> =>{
+   try {
+       const response = await api.post(SIGNUP_URL, credentials);
+       const { token } = response.data;
+       localStorage.setItem('token', token);
+       return response.data;
+   } catch (error ) {
+       if (error instanceof AxiosError){
+           throw error.response?.data || 'Ha occurrido un error al iniciar sesión intente más tarde';
+       }
+    }
+    throw 'Ha ocurrido un error';
+}
+
 export const logout = (): void => {
     localStorage.removeItem('token');
 };
 
-export const getAuthHeaders = (): { Authorization?: string } => {
-    const token = localStorage.getItem('token');
-    return token ? { Authorization: `Bearer ${token}` } : {};
-};
