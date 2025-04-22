@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button.tsx";
 import {useEffect, useState } from "react";
 import RegisterModal from "@/components/organisms/register-modal.tsx";
 import LoginModal from "@/components/organisms/login-modal.tsx";
@@ -41,8 +41,8 @@ export default function Home() {
                 </Button>
             </div>
 
-            <LoginModal open={loginOpen} onOpenChange={setLoginOpen} />
-            <RegisterModal open={registerOpen} onOpenChange={setRegisterOpen} />
+            <LoginModal open={loginOpen} onOpenChange={setLoginOpen} setRegisterOpen={setRegisterOpen} />
+            <RegisterModal open={registerOpen} onOpenChange={setRegisterOpen} setLoginOpen={setLoginOpen} />
         </div>
     )
 }

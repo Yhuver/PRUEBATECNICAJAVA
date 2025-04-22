@@ -2,8 +2,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from "@/components/organisms/navbar.tsx";
 
 import './App.css'
-import Home from "@/pages/Home.tsx";
-import Transaction from "@/pages/Transaction.tsx"
+import Home from "@/components/pages/Home.tsx";
+import Transaction from "@/components/pages/Transaction.tsx"
 
 function App() {
     return (
