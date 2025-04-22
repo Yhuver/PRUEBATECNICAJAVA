@@ -79,6 +79,3 @@ docker-compose down
 - Asegúrate de tener configurado correctamente el archivo `.env` para evitar errores con la base de datos.
 - Puedes personalizar los puertos y la configuración de los servicios en el archivo `docker-compose.yml` según las necesidades de tu proyecto.
 
-## Licencia
-
-Este proyecto está bajo la [MIT License](LICENSE).
