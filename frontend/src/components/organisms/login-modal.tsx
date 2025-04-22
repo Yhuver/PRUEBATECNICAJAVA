@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEvent, useState} from "react";
 import { Button } from "@/components/ui/button";
 import ModalSkeleton from "@/components/molecules/modal-skeleton.tsx";
 import InputField from "@/components/molecules/input-label.tsx";
@@ -12,7 +12,7 @@ interface LoginModalProps {
 export default function LoginModal({ open, onOpenChange, setRegisterOpen }: LoginModalProps) {
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
 

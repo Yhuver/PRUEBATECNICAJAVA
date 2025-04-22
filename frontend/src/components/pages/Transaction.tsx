@@ -144,7 +144,7 @@ const data = [
         { id: 48, amount: 64.40, merchant: "Pizzería Italia", createdAt: "2025-03-09" }
 ];
 
-export default function Transaction() {
+export default function  Transaction() {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
