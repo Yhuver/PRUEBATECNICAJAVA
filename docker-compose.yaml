@@ -1,9 +1,9 @@
 services:
   database:
+    container_name: tenpo
     env_file:
       - path: ./.env
         required: true
-    container_name: tenpo
     image: postgres:17
     environment:
       - POSTGRES_USER:${POSTGRES_USER}
@@ -13,5 +13,16 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+ 
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend/
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    depends_on:
+      - database
+
 volumes:
   postgres_data:
