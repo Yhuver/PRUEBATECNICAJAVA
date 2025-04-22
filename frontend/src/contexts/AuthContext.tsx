@@ -1,10 +1,11 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import { login, logout, getAuthHeaders } from '@/services/auth-service.ts';
-import { LoginCredentials } from '@/services/auth-service.ts';
+import { login, logout } from '@/services/auth-service.ts';
+import {LoginRequest} from "@/interfaces/auth-interface.ts";
+import {getAuthHeaders} from "@/services/api.ts";
 
 interface AuthContextType {
     isAuthenticated: boolean;
-    login: (credentials: LoginCredentials) => Promise<void>;
+    login: (credentials: LoginRequest) => Promise<void>;
     logout: () => void;
     getAuthHeaders: () => { Authorization?: string };
 }
@@ -15,11 +16,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('accessToken');
         setIsAuthenticated(!!token);
     }, []);
 
-    const handleLogin = async (credentials: LoginCredentials) => {
+    const handleLogin = async (credentials: LoginRequest) => {
         await login(credentials);
         setIsAuthenticated(true);
     };

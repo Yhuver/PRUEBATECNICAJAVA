@@ -20,6 +20,11 @@ const processQueue = (token: string | null, error: unknown) => {
     failedQueue = [];
 };
 
+export const getAuthHeaders = (): { Authorization?: string } => {
+    const token = localStorage.getItem("accessToken");
+    return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem("token");
     if (token && config.headers) {
@@ -58,7 +63,7 @@ api.interceptors.response.use(
                 });
 
                 const newToken = res.data.token;
-                localStorage.setItem("token", newToken);
+                localStorage.setItem("accessToken", newToken);
                 processQueue(newToken, null);
                 if (originalRequest.headers)
                     originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
@@ -66,7 +71,7 @@ api.interceptors.response.use(
                 return api(originalRequest);
             } catch (err) {
                 processQueue(null, err);
-                localStorage.removeItem("token");
+                localStorage.removeItem("accessToken");
                 localStorage.removeItem("refreshToken");
                 window.location.href = "/"; // TODO revisar
                 return Promise.reject(err);
