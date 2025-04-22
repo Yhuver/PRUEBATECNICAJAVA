@@ -7,9 +7,9 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuSeparator
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu.tsx";
 import {DropdownMenuTrigger} from "@/components/ui/dropdown-menu.tsx";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button.tsx";
 import {MoreVerticalIcon, PlusIcon} from "lucide-react";
 import TransactionModal from "@/components/organisms/transaction-modal.tsx";
 import { useState } from "react";
