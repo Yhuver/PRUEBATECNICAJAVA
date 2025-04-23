@@ -10,12 +10,10 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface AccountDtoMapper {
-
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
-    @Mapping(target = "active", constant = "true")
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "active", ignore = true)
     Account toAuthDomain(RegisterRequestDto dto);
-
     AuthResponseDto toAuthResponseDto(AuthResult result);
     RefreshTokenDto toRefreshTokenResponseDto(AuthResult result);
 }

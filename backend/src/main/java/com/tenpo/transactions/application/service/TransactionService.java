@@ -31,7 +31,7 @@ public class TransactionService implements TransactionUseCase {
     @Override
     public List<Transaction> findAll() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Account account = accountRepositoryPort.findByUsername(username);
+        Account account = accountRepositoryPort.findByEmail(username);
         return transactionRepositoryPort.findAllByAccount(account);
     }
 
@@ -39,7 +39,7 @@ public class TransactionService implements TransactionUseCase {
     @Transactional
     public Transaction save(Transaction transaction) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Account account = accountRepositoryPort.findByUsername(username);
+        Account account = accountRepositoryPort.findByEmail(username);
 
         transaction.setActive(true);
         transaction.setAccount(account);
@@ -54,7 +54,7 @@ public class TransactionService implements TransactionUseCase {
     @Override
     public Transaction update(int id, Transaction transaction) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Account account = accountRepositoryPort.findByUsername(username);
+        Account account = accountRepositoryPort.findByEmail(username);
 
         if (account == null) {
             throw new AccountNotFoundException(username);
@@ -74,7 +74,7 @@ public class TransactionService implements TransactionUseCase {
     @Override
     public boolean delete(int id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Account account = accountRepositoryPort.findByUsername(username);
+        Account account = accountRepositoryPort.findByEmail(username);
 
         Transaction transaction = transactionRepositoryPort.findByIdAndAccount(id, account)
                 .orElseThrow(() -> new TransactionNotFoundException(id));

@@ -15,7 +15,7 @@ public class LoginUtilityService {
     }
 
     public UserDetails findMatch(String username) {
-        Account account = accountAdapter.findByUsername(username);
+        Account account = accountAdapter.findByEmail(username);
 
         if (account != null) {
             return User.withUsername(account.getEmail())

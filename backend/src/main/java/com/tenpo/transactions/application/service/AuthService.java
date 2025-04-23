@@ -54,7 +54,7 @@ public class AuthService implements AuthUseCase {
 
     @Override
     public AuthResult register(Account account) {
-        if (authRepositoryPort.existsByUsername(account.getEmail())) {
+        if (authRepositoryPort.existsByEmail(account.getEmail())) {
             throw new UsernameAlreadyExistsException();
         }
         account.setPassword(passwordEncoderPort.encode(account.getPassword()));
@@ -72,7 +72,7 @@ public class AuthService implements AuthUseCase {
             String username = jwtTokenAdapter.extractUsername(refresh);
 
             Account account = authRepositoryPort
-                    .findByUsername(username);
+                    .findByEmail(username);
 
             String newAccessToken = jwtTokenAdapter.generateToken(account);
             String newRefreshToken = jwtTokenAdapter.generateRefreshToken(account);

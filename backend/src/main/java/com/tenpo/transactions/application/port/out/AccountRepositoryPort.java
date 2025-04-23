@@ -3,7 +3,7 @@ package com.tenpo.transactions.application.port.out;
 import com.tenpo.transactions.domain.model.Account;
 
 public interface AccountRepositoryPort {
-    boolean existsByUsername(String username);
-    Account findByUsername(String username);
+    boolean existsByEmail(String email);
+    Account findByEmail(String email);
     Account save(Account account);
 }

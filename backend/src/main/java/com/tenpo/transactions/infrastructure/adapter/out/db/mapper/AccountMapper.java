@@ -7,6 +7,9 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface AccountMapper {
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
+    @Mapping(target = "active", constant = "true")
     @Mapping(target = "transactions", ignore = true)
     AccountEntity toEntity(Account domain);
     Account toDomain(AccountEntity entity);
