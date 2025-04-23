@@ -14,7 +14,7 @@ export default function NavbarOptions() {
                     <Link
                         key={route.id}
                         to={route.href}
-                        className={cn("text-sm transition-colors hover:text-white",
+                        className={cn("text-sm transition-colors hover:text-white translate-y-0.5",
                                 pathname === route.href ? "text-white" : "text-zinc-400")}>
                             {route.label}
                         </Link> )
