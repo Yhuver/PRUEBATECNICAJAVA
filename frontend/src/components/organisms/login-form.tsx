@@ -4,10 +4,11 @@ import { useLoginForm } from "@/hooks/useLoginForm";
 
 interface LoginFormProps {
     onSuccess: () => void;
-    onError?: (msg: string) => void;
+    onError?: ( msg: string ) => void;
 }
 
 export default function LoginForm({ onSuccess, onError }: LoginFormProps) {
+
     const {
         register,
         handleSend,
@@ -25,7 +26,6 @@ export default function LoginForm({ onSuccess, onError }: LoginFormProps) {
                     {...register("email")}
                     error={errors.email?.message}
                 />
-
                 <InputField
                     id="password"
                     type="password"
@@ -34,7 +34,6 @@ export default function LoginForm({ onSuccess, onError }: LoginFormProps) {
                     {...register("password")}
                     error={errors.password?.message}
                 />
-
                 <div className="text-sm w-full text-right">
                     <a href="#" className="text-zinc-400 hover:text-white">
                         ¿Olvidaste tu contraseña?

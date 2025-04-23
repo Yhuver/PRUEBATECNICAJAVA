@@ -1,6 +1,8 @@
 import ModalSkeleton from "@/components/molecules/modal-skeleton.tsx";
 import RegisterForm from "@/components/organisms/register-form.tsx";
 import {Button} from "@/components/ui/button.tsx";
+import {toast} from "sonner";
+import {useNavigate} from "react-router";
 
 interface RegisterFormProps {
     open: boolean;
@@ -9,6 +11,21 @@ interface RegisterFormProps {
 }
 
 export default function RegisterModal({open, onOpenChange, setLoginOpen }: RegisterFormProps) {
+
+    const navigate = useNavigate();
+
+    const onSuccess = () => {
+        toast.success("Registro satisfactorio!")
+        onOpenChange(false)
+        navigate("")
+    }
+
+    const onError = () => {
+        toast.error("Ha ocurrido un error", {
+            description: "Por favor intenta más tarde.",
+        })
+    }
+
     return (
         <ModalSkeleton
             open={open}
@@ -17,10 +34,8 @@ export default function RegisterModal({open, onOpenChange, setLoginOpen }: Regis
             description="Crea una nueva cuenta para comenzar"
         >
             <RegisterForm
-                onSuccess={() => onOpenChange(false)}
-                onError={(msg: string) => {
-                    console.error("Error de login:", msg);
-                }}
+                onSuccess={onSuccess}
+                onError={onError}
             />
 
             <div className="text-center text-sm text-zinc-400 mt-4">

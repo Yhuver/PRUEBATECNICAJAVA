@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/schemas/auth-schemas";
 import { z } from "zod";
-import { login } from "@/services/auth-service";
+import {useAuthContext} from "@/contexts/AuthContext.tsx";
 
 export type LoginFormData = z.infer<typeof LoginSchema>;
 
@@ -12,6 +12,7 @@ interface UseLoginFormProps {
 }
 
 export function useLoginForm({ onSuccess, onError }: UseLoginFormProps = {}) {
+    const { login } = useAuthContext();
     const form = useForm<LoginFormData>({
         resolver: zodResolver(LoginSchema),
         defaultValues: {

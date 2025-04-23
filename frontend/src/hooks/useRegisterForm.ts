@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterSchema } from "@/schemas/auth-schemas";
 import { z } from "zod";
-import {register} from "@/services/auth-service";
+import { useAuthContext } from "@/contexts/AuthContext.tsx";
 
 export type RegisterFormData = z.infer<typeof RegisterSchema>;
 
@@ -12,6 +12,8 @@ interface RegisterFormProps {
 }
 
 export function useRegisterForm({ onSuccess, onError }: RegisterFormProps = {}) {
+    const { register } = useAuthContext()
+
     const form = useForm<RegisterFormData>({
         resolver: zodResolver(RegisterSchema),
         defaultValues: {
@@ -24,8 +26,8 @@ export function useRegisterForm({ onSuccess, onError }: RegisterFormProps = {}) 
 
     const handleSend = async (data: RegisterFormData) => {
         try {
-            await register(data);
-            onSuccess?.(); // TODO Abrir una notificación de registro correcto
+            register(data);
+            onSuccess?.();
         } catch (error: any) {
             const message = typeof error === "string" ? error : "Error inesperado";
             onError?.(message);

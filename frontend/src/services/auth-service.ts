@@ -15,8 +15,9 @@ import {
 export const login = async (credentials: LoginRequest): Promise<LoginResponse> => {
     try {
         const response = await api.post(SIGNING_URL, credentials);
-        const { token } = response.data;
-        localStorage.setItem('token', token);
+        const { accessToken, refreshToken } = response.data;
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken )
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError) {
@@ -29,8 +30,9 @@ export const login = async (credentials: LoginRequest): Promise<LoginResponse> =
 export const register = async (credentials: RegisterRequest): Promise<RegisterResponse> =>{
    try {
        const response = await api.post(SIGNUP_URL, credentials);
-       const { token } = response.data;
-       localStorage.setItem('token', token);
+       const { accessToken, refreshToken } = response.data;
+       localStorage.setItem('accessToken', accessToken);
+       localStorage.setItem('refreshToken', refreshToken )
        return response.data;
    } catch (error ) {
        if (error instanceof AxiosError){
@@ -41,6 +43,7 @@ export const register = async (credentials: RegisterRequest): Promise<RegisterRe
 }
 
 export const logout = (): void => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
 };
 

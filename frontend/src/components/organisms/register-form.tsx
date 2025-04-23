@@ -51,7 +51,7 @@ export default function RegisterForm({ onSuccess, onError }: RegisterFormProps) 
                     />
                 </div>
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
-                    {isSubmitting ? "Iniciando sesión..." : "Iniciar sesión"}
+                    {isSubmitting ? "Registrandose..." : "Registrarse"}
                 </Button>
             </form>
     );
