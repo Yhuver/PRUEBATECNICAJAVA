@@ -7,6 +7,7 @@ import com.tenpo.transactions.application.port.out.PasswordEncoderPort;
 import com.tenpo.transactions.domain.exception.UsernameAlreadyExistsException;
 import com.tenpo.transactions.domain.model.Account;
 import com.tenpo.transactions.application.result.AuthResult;
+import com.tenpo.transactions.infrastructure.adapter.out.jwt.JwtTokenAdapter;
 import com.tenpo.transactions.infrastructure.security.service.AccountDetailService;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,17 +20,18 @@ public class AuthService implements AuthUseCase {
     private final AccountDetailService userDetailsService;
     private final PasswordEncoderPort passwordEncoderPort;
     private final AccountRepositoryPort authRepositoryPort;
+    private final JwtTokenAdapter jwtTokenAdapter;
 
     public AuthService(
-            AuthTokenPort authTokenPort,
-            AccountDetailService userDetailsService,
+            AuthTokenPort authTokenPort, AccountDetailService userDetailsService,
             PasswordEncoderPort passwordEncoderPort,
-            AccountRepositoryPort authRepositoryPort
-    ) {
+            AccountRepositoryPort authRepositoryPort,
+            JwtTokenAdapter jwtTokenAdapter) {
         this.authTokenPort = authTokenPort;
         this.userDetailsService = userDetailsService;
         this.passwordEncoderPort = passwordEncoderPort;
         this.authRepositoryPort = authRepositoryPort;
+        this.jwtTokenAdapter = jwtTokenAdapter;
     }
 
     @Override
@@ -40,7 +42,7 @@ public class AuthService implements AuthUseCase {
             throw new BadCredentialsException("Invalid credentials");
 
         Account account = new Account();
-        account.setUsername(userDetails.getUsername());
+        account.setEmail(userDetails.getUsername());
         account.setPassword(userDetails.getPassword());
         account.setActive(true);
 
@@ -52,7 +54,7 @@ public class AuthService implements AuthUseCase {
 
     @Override
     public AuthResult register(Account account) {
-        if (authRepositoryPort.existsByUsername(account.getUsername())) {
+        if (authRepositoryPort.existsByUsername(account.getEmail())) {
             throw new UsernameAlreadyExistsException();
         }
         account.setPassword(passwordEncoderPort.encode(account.getPassword()));
@@ -62,6 +64,26 @@ public class AuthService implements AuthUseCase {
         String refreshToken = authTokenPort.generateRefreshToken(saved);
 
         return new AuthResult(accessToken, refreshToken);
+    }
+
+    @Override
+    public AuthResult refreshToken(String refresh) {
+        try {
+            String username = jwtTokenAdapter.extractUsername(refresh);
+
+            Account account = authRepositoryPort
+                    .findByUsername(username);
+
+            String newAccessToken = jwtTokenAdapter.generateToken(account);
+            String newRefreshToken = jwtTokenAdapter.generateRefreshToken(account);
+
+            return AuthResult.builder()
+                    .accessToken(newAccessToken)
+                    .refreshToken(newRefreshToken)
+                    .build();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to refresh token: " + e.getMessage());
+        }
     }
 
 

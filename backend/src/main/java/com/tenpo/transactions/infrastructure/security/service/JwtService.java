@@ -38,8 +38,9 @@ public class JwtService {
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
+                .claim("type", "refresh")
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION))
+                .expiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION))
                 .signWith(key)
                 .compact();
     }
@@ -62,10 +63,19 @@ public class JwtService {
     // Validate JWT token
     public boolean validateJwtToken(String token) {
         try {
-            Jwts.parser()
+            Jws<Claims> claimsJws = Jwts.parser()
                     .verifyWith(key)
                     .build()
                     .parseSignedClaims(token);
+
+            Claims claims = claimsJws.getPayload();
+
+            String tokenType = claims.get("type", String.class);
+            if (!"refresh".equals(tokenType)) {
+                logger.error("The token is not a refresh token");
+                return false;
+            }
+
             return true;
         } catch (SecurityException e) {
             logger.error("Invalid JWT signature: {}", e.getMessage());

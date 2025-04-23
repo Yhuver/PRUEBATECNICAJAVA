@@ -18,7 +18,7 @@ public class LoginUtilityService {
         Account account = accountAdapter.findByUsername(username);
 
         if (account != null) {
-            return User.withUsername(account.getUsername())
+            return User.withUsername(account.getEmail())
                     .password(account.getPassword())
                     .build();
         }

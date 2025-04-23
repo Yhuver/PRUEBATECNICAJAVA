@@ -5,8 +5,10 @@ import lombok.Data;
 
 @Data
 public class RegisterRequestDto {
-    @NotNull(message = "Username is required")
-    private String username;
+    @NotNull(message = "FullName is required")
+    private String fullName;
+    @NotNull(message = "Email is required")
+    private String email;
     @NotNull(message = "Password is required")
     private String password;
 }

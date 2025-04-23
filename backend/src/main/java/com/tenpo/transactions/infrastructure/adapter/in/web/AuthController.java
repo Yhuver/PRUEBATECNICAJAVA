@@ -2,6 +2,7 @@ package com.tenpo.transactions.infrastructure.adapter.in.web;
 
 import com.tenpo.transactions.application.dto.AuthRequestDto;
 import com.tenpo.transactions.application.dto.AuthResponseDto;
+import com.tenpo.transactions.application.dto.RefreshTokenDto;
 import com.tenpo.transactions.application.dto.RegisterRequestDto;
 import com.tenpo.transactions.application.mapper.AccountDtoMapper;
 import com.tenpo.transactions.application.port.in.AuthUseCase;
@@ -30,16 +31,23 @@ public class AuthController {
 
     @PostMapping("signin")
     public ResponseEntity<AuthResponseDto> authenticate(@RequestBody @Valid AuthRequestDto request){
-        AuthResult result = useCase.authenticate(request.getUsername(), request.getPassword());
-        AuthResponseDto responseDto = mapper.toResponseDto(result);
+        AuthResult result = useCase.authenticate(request.getEmail(), request.getPassword());
+        AuthResponseDto responseDto = mapper.toAuthResponseDto(result);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @PostMapping("signup")
     public ResponseEntity<AuthResponseDto> register(@RequestBody @Valid RegisterRequestDto request){
-        Account toCreate =  mapper.toDomain(request);
+        Account toCreate =  mapper.toAuthDomain(request);
         AuthResult result = useCase.register(toCreate);
-        AuthResponseDto responseDto = mapper.toResponseDto(result);
+        AuthResponseDto responseDto = mapper.toAuthResponseDto(result);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
+
+    @PostMapping("refresh")
+    public ResponseEntity<RefreshTokenDto> register(@RequestBody @Valid RefreshTokenDto request){
+        AuthResult result = useCase.refreshToken(request.getRefreshToken());
+        RefreshTokenDto responseDto = mapper.toRefreshTokenResponseDto(result);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 }

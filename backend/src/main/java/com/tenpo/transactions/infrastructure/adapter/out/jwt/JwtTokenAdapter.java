@@ -26,4 +26,14 @@ public class JwtTokenAdapter implements AuthTokenPort {
         UserDetails userDetails = new AccountToUserDetailsAdapter(account);
         return jwtService.generateRefreshToken(userDetails);
     }
+
+    @Override
+    public boolean isTokenValid(String token) {
+        return jwtService.validateJwtToken(token);
+    }
+
+    @Override
+    public String extractUsername(String token) {
+        return jwtService.getUsernameFromToken(token);
+    }
 }
