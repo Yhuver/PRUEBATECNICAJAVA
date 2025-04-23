@@ -21,7 +21,7 @@ export default function TableDraggableRow<T extends z.ZodTypeAny>({ row }: Dragg
             data-state={row.getIsSelected() && "selected"}
             data-dragging={isDragging}
             className={cn(
-                "hover:bg-muted/50 even:bg-muted/10 transition-colors",
+                "hover:bg-muted/50 transition-colors",
                 "relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
             )}
             style={{

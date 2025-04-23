@@ -7,7 +7,7 @@ interface TableContentProps<T extends { id: string | number }> {
 
 export default function DataTableHeader<T extends { id: string | number }>({ table }: TableContentProps<T>) {
     return (
-        <TableHeaderS className="sticky top-0 z-10 bg-muted">
+        <TableHeaderS className="sticky top-0 z-10">
             {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (

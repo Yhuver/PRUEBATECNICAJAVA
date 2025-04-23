@@ -1,14 +1,16 @@
-import { ColumnDef } from "@tanstack/react-table"
+import {ColumnDef} from "@tanstack/react-table"
 import DataTable from "@/components/organisms/data-table.tsx";
 import DragHandle from "@/components/atoms/drag-handle.tsx";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
-import { Button } from "@/components/ui/button.tsx";
+import {Button} from "@/components/ui/button.tsx";
 import {EditIcon, PlusIcon, TrashIcon} from "lucide-react";
 import TransactionModal from "@/components/organisms/transaction-modal.tsx";
 import {useEffect, useState} from "react";
 import {toast} from "sonner";
 import {TransactionResponse} from "@/interfaces/transaction-interface.ts";
 import {getTransactions} from "@/services/transaction-service.ts";
+import {formatDistanceToNow } from "date-fns";
+import { es } from "date-fns/locale";
 
 
 const columns: ColumnDef<TransactionResponse>[] = [
@@ -44,19 +46,29 @@ const columns: ColumnDef<TransactionResponse>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "amount",
-        header: "Cantidad",
-        cell: ({ row }) => `$ ${row.original.amount.toFixed(2)}`
-    },
-    {
         accessorKey: "merchant",
         header: "Giro o comercio",
         cell: info => info.getValue(),
     },
     {
         accessorKey: "createdAt",
-        header: "Fecha de la transación",
-        cell: info => info.getValue(),
+        header: "Fecha de la transacción",
+        cell: info => {
+            const createdAt = new Date(info.getValue() as string);
+            return formatDistanceToNow(createdAt, {addSuffix: true, locale: es});
+        }
+    },
+    {
+        accessorKey: "amount",
+        header: "Cantidad",
+        cell: ({ row }) => {
+            const amount = parseFloat(row.getValue("amount"))
+            const formatted = new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+            }).format(amount)
+            return <div className="font-medium">{formatted + " COP"}</div>
+        }
     },
     {
         id: "actions",
@@ -71,17 +83,17 @@ const columns: ColumnDef<TransactionResponse>[] = [
                     <EditIcon/>
                 </Button>
                 <Button
-                    className="border border-red-400 text-red-400 hover:bg-red-50"
+                    className="border text-red-300 "
                     variant={"outline"}
                     onClick={() => {
                         toast("presionaste borrar")
                     }}
                 >
-                    <TrashIcon className={"text-red-400"}/>
+                    <TrashIcon className={"text-red-300"}/>
                 </Button>
             </div>
         ),
-    },
+    }
 ]
 
 export default function  Transaction() {
