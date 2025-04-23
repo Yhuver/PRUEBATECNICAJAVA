@@ -19,8 +19,9 @@ public class AccountEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private String fullName;
     @Column(unique = true)
-    private String username;
+    private String email;
     private String password;
 
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)

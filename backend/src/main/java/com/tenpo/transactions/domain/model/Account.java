@@ -5,9 +5,14 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Account {
     private int id;
-    private String username;
+    private String fullName;
+    private String email;
     private String password;
     private LocalDateTime createdAt;
     private boolean active;

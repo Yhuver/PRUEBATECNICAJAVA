@@ -27,6 +27,6 @@ public class AccountDetailService implements UserDetailsService {
         if (account == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
-        return new User(account.getUsername(), account.getPassword(), Collections.emptyList());
+        return new User(account.getEmail(), account.getPassword(), Collections.emptyList());
     }
 }
