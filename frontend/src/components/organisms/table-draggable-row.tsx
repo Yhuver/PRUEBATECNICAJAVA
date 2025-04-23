@@ -11,7 +11,7 @@ type DraggableRowProps<T extends z.ZodTypeAny> = {
 
 export default function TableDraggableRow<T extends z.ZodTypeAny>({ row }: DraggableRowProps<T>) {
     const { transform, transition, setNodeRef, isDragging } = useSortable({
-        id: row.original.id.toString(),
+        id: row.original.id,
     });
 
     return (

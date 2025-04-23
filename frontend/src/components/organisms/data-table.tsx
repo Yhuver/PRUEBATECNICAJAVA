@@ -7,7 +7,7 @@ import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
 import { useDataTable } from "@/hooks/useDataTable"
 import { ColumnDef } from "@tanstack/react-table"
 
-type RowWithId = { id: string | number }
+type RowWithId = { id: number }
 
 export default function DataTable<T extends RowWithId>({  columns, data: initialData }: {
     columns: ColumnDef<T>[]
