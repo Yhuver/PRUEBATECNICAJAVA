@@ -19,19 +19,18 @@ public class AccountRepositoryAdapter implements AccountRepositoryPort {
     }
 
     @Override
-    public boolean existsByUsername(String username) {
-        return jpa.existsByUsername(username);
+    public boolean existsByUsername(String email) {
+        return jpa.existsByEmail(email);
     }
 
     @Override
-    public Account findByUsername(String username) {
-        AccountEntity user = jpa.findByUsername(username);
+    public Account findByUsername(String email) {
+        AccountEntity user = jpa.findByEmail(email);
         return mapper.toDomain(user);
     }
 
     @Override
-    public Account save(Account account) {
-        AccountEntity accountEntity = mapper.toEntity(account);
+    public Account save(Account account) {AccountEntity accountEntity = mapper.toEntity(account);
         AccountEntity saved = jpa.save(accountEntity);
         return mapper.toDomain(saved);
     }
