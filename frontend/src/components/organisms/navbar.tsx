@@ -1,6 +1,6 @@
 import { useState} from "react";
-import LoginModal from "@/components/organisms/login-modal.tsx";
-import RegisterModal from "@/components/organisms/register-modal.tsx";
+import LoginModal from "@/components/templates/login-modal.tsx";
+import RegisterModal from "@/components/templates/register-modal.tsx";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { Link, useLocation } from "react-router";

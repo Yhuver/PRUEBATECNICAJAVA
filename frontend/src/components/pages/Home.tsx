@@ -1,6 +1,6 @@
 import {useEffect, useState } from "react";
-import RegisterModal from "@/components/organisms/register-modal.tsx";
-import LoginModal from "@/components/organisms/login-modal.tsx";
+import RegisterModal from "@/components/templates/register-modal.tsx";
+import LoginModal from "@/components/templates/login-modal.tsx";
 
 
 export default function Home() {

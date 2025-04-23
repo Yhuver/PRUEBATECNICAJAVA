@@ -9,15 +9,17 @@ import {AuthProvider} from "@/contexts/AuthContext.tsx";
 function App() {
 
     return (
-        <AuthProvider>
-            <BrowserRouter>
-                <Navbar />
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/transactions" element={<Transaction />} />
-                </Routes>
-            </BrowserRouter>
-        </AuthProvider>
+       <div className="bg-black">
+           <AuthProvider>
+               <BrowserRouter>
+                   <Navbar />
+                   <Routes>
+                       <Route path="/" element={<Home />} />
+                       <Route path="/transactions" element={<Transaction />} />
+                   </Routes>
+               </BrowserRouter>
+           </AuthProvider>
+       </div>
     );
 }
 
