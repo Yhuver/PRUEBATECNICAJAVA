@@ -1,7 +1,7 @@
 import {
     TransactionRequest,
-    TransactionResponse
-} from "@/interfaces/trasaction-interface.ts";
+    TransactionResponse, TransactionUpdateRequest
+} from "@/interfaces/transaction-interface.ts";
 import { AxiosError } from "axios";
 import {api} from "@/services/api.ts";
 
@@ -24,7 +24,7 @@ export const addTransaction = async ( data : TransactionRequest) : Promise<Trans
     }
 }
 
-export const getTransaction = async (): Promise<Array<TransactionResponse>> => {
+export const getTransactions = async (): Promise<Array<TransactionResponse>> => {
     try {
         const response = await api.get(GET_TRANSACTION_URL);
         return response.data;
@@ -36,9 +36,9 @@ export const getTransaction = async (): Promise<Array<TransactionResponse>> => {
     }
 };
 
-export const updateTransaction = async ( data: TransactionRequest ): Promise<TransactionResponse> => {
+export const updateTransaction = async ( id: number,  data: TransactionUpdateRequest ): Promise<TransactionResponse> => {
     try {
-        const response = await api.put(`${UPDATE_TRANSACTION_URL}/${data.id}`, data);
+        const response = await api.put(`${UPDATE_TRANSACTION_URL}/${id}`, data);
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError) {
@@ -48,13 +48,13 @@ export const updateTransaction = async ( data: TransactionRequest ): Promise<Tra
     }
 };
 
-export const detete = async (data: TransactionRequest): Promise<any> => {
+export const detete = async ( id : number): Promise<void> => {
     try {
-        const response = await api.delete(`${DELETE_TRANSACTION_URL}/${data.id}`);
+        const response = await api.delete(`${DELETE_TRANSACTION_URL}/${id}`);
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError) {
-
+            throw error.response?.data || "Ha ocurrido un error al eliminar la transacción. Intente más tarde.";
         }
         throw  "Ha ocurrido un error";
     }

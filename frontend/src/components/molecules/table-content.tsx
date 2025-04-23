@@ -9,7 +9,7 @@ interface TableContentProps<T extends { id: string | number }> {
     dataIds: UniqueIdentifier[]
 }
 
-export default function DataTableContent<T extends { id: string | number }>({ table, dataIds}: TableContentProps<T>) {
+export default function DataTableContent<T extends { id: string | number }>({ table, dataIds }: TableContentProps<T>) {
     return (
         <TableBody>
             {table.getRowModel().rows.length > 0 ? (

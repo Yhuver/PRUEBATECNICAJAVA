@@ -1,4 +1,4 @@
-import { useId, useMemo, useState } from "react"
+import {useId, useState} from "react"
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -26,7 +26,7 @@ type RowWithId = { id: string | number }
 
 export function useDataTable<T extends RowWithId>(initialData: T[], columns: ColumnDef<T>[]) {
     const [data, setData] = useState(() => initialData)
-    const [rowSelection, setRowSelection] = useState({})
+    const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({})
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [sorting, setSorting] = useState<SortingState>([])
@@ -42,8 +42,6 @@ export function useDataTable<T extends RowWithId>(initialData: T[], columns: Col
         useSensor(TouchSensor),
         useSensor(KeyboardSensor)
     )
-
-    const dataIds = useMemo(() => data.map(item => item.id), [data])
 
     const table = useReactTable({
         data,
@@ -70,14 +68,17 @@ export function useDataTable<T extends RowWithId>(initialData: T[], columns: Col
         getFacetedUniqueValues: getFacetedUniqueValues(),
     })
 
+    const dataIds = data.map(item => item.id)
+
     function handleDragEnd(event: DragEndEvent) {
         const { active, over } = event
         if (active && over && active.id !== over.id) {
-            setData((data) => {
-                const oldIndex = dataIds.indexOf(active.id)
-                const newIndex = dataIds.indexOf(over.id)
-                return arrayMove(data, oldIndex, newIndex)
-            })
+            const oldIndex = dataIds.indexOf(active.id)
+            const newIndex = dataIds.indexOf(over.id)
+
+            if (oldIndex !== -1 && newIndex !== -1) {
+                setData((data) => arrayMove(data, oldIndex, newIndex))
+            }
         }
     }
 
@@ -90,4 +91,5 @@ export function useDataTable<T extends RowWithId>(initialData: T[], columns: Col
         selectedCount: table.getFilteredSelectedRowModel().rows.length,
         totalCount: table.getFilteredRowModel().rows.length,
     }
-} 
+}
+

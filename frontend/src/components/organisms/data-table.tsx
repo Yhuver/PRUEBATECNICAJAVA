@@ -1,18 +1,16 @@
 import { Table } from "@/components/ui/table.tsx"
+import { useDataTable } from "@/hooks/useDataTable"
 import TablePagination from "@/components/molecules/table-pagination.tsx"
 import TableContent from "@/components/molecules/table-content.tsx"
 import DataTableHeader from "@/components/molecules/table-header.tsx"
-import {closestCenter, DndContext} from "@dnd-kit/core"
+import { closestCenter, DndContext } from "@dnd-kit/core"
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
-import { useDataTable } from "@/hooks/useDataTable"
 import { ColumnDef } from "@tanstack/react-table"
 
 type RowWithId = { id: number }
 
-export default function DataTable<T extends RowWithId>({  columns, data: initialData }: {
-    columns: ColumnDef<T>[]
-    data: T[]
-}) {
+export default function DataTable<T extends RowWithId>({ columns, data: initialData }: { columns: ColumnDef<T>[]; data: T[] }) {
+
     const {
         table,
         dataIds,
@@ -21,7 +19,7 @@ export default function DataTable<T extends RowWithId>({  columns, data: initial
         handleDragEnd,
         selectedCount,
         totalCount,
-    } = useDataTable( initialData, columns )
+    } = useDataTable(initialData, columns)
 
     return (
         <div className="relative flex flex-col gap-4 overflow-auto space-y-6 px-4 lg:px-6">
