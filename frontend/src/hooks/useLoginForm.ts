@@ -25,7 +25,7 @@ export function useLoginForm({ onSuccess, onError }: UseLoginFormProps = {}) {
         try {
             await login(data);
             onSuccess?.();
-        } catch (error: any) {
+        } catch (error) {
             const message = typeof error === "string" ? error : "Error inesperado";
             onError?.(message);
         }

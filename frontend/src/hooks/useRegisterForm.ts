@@ -26,9 +26,9 @@ export function useRegisterForm({ onSuccess, onError }: RegisterFormProps = {}) 
 
     const handleSend = async (data: RegisterFormData) => {
         try {
-            register(data);
+            await register(data);
             onSuccess?.();
-        } catch (error: any) {
+        } catch (error) {
             const message = typeof error === "string" ? error : "Error inesperado";
             onError?.(message);
         }
