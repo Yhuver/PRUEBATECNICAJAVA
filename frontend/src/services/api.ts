@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import {API_URL, REFRESH_URL} from "@/constants/endpoints";
+import {HOME_ROUTE} from "@/constants/routes.ts";
 
 export const api = axios.create({
     baseURL: API_URL,
@@ -26,7 +27,7 @@ export const getAuthHeaders = (): { Authorization?: string } => {
 };
 
 api.interceptors.request.use((config) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     if (token && config.headers) {
         config.headers["Authorization"] = `Bearer ${token}`;
     }
@@ -73,7 +74,7 @@ api.interceptors.response.use(
                 processQueue(null, err);
                 localStorage.removeItem("accessToken");
                 localStorage.removeItem("refreshToken");
-                window.location.href = "/"; // TODO revisar
+                window.location.href = HOME_ROUTE;
                 return Promise.reject(err);
             } finally {
                 isRefreshing = false;

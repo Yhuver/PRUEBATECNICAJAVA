@@ -4,6 +4,7 @@ import InputField from "@/components/molecules/input-label.tsx";
 import { useNavigate } from "react-router-dom";
 import ModalSkeleton from "@/components/molecules/modal-skeleton.tsx";
 import {Banknote} from "lucide-react";
+import {TRANSACTION_ROUTE} from "@/constants/routes.ts";
 
 interface TransactionModalProps {
     open: boolean;
@@ -32,7 +33,7 @@ export default function TransactionModal({ open, onOpenChange }: TransactionModa
         setTimeout(() => {
             setIsLoading(false);
             onOpenChange(false);
-            navigate("/transactions");
+            navigate(TRANSACTION_ROUTE);
         }, 1000);
     };
 
@@ -69,7 +70,7 @@ export default function TransactionModal({ open, onOpenChange }: TransactionModa
                         type="button"
                         variant="outline"
                         className={"flex-1"}
-                        onClick={() => navigate("/transactions")}>
+                        onClick={() => navigate(TRANSACTION_ROUTE)}>
                         Cancelar
                     </Button>
                 </div>
