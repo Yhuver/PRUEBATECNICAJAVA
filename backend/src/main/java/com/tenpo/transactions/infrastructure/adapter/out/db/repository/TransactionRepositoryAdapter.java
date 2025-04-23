@@ -5,8 +5,8 @@ import com.tenpo.transactions.domain.model.Account;
 import com.tenpo.transactions.domain.model.Transaction;
 import com.tenpo.transactions.infrastructure.adapter.out.db.entity.AccountEntity;
 import com.tenpo.transactions.infrastructure.adapter.out.db.entity.TransactionEntity;
+import com.tenpo.transactions.infrastructure.adapter.out.db.jpa.AccountJpaRepository;
 import com.tenpo.transactions.infrastructure.adapter.out.db.jpa.TransactionJpaRepository;
-import com.tenpo.transactions.infrastructure.adapter.out.db.mapper.AccountMapper;
 import com.tenpo.transactions.infrastructure.adapter.out.db.mapper.TransactionMapper;
 import org.springframework.stereotype.Repository;
 
@@ -15,21 +15,19 @@ import java.util.Optional;
 
 @Repository
 public class TransactionRepositoryAdapter implements TransactionRepositoryPort {
-
     private final TransactionMapper transactionMapper;
-    private final AccountMapper accountMapper;
     private final TransactionJpaRepository transactionRepositoryJpa;
+    private final AccountJpaRepository accountJpaRepository;
 
     public TransactionRepositoryAdapter(
             TransactionMapper transactionMapper,
-            AccountMapper accountMapper,
-            TransactionJpaRepository transactionRepositoryJpa
+            TransactionJpaRepository transactionRepositoryJpa,
+            AccountJpaRepository accountJpaRepository
     ) {
         this.transactionMapper = transactionMapper;
-        this.accountMapper = accountMapper;
         this.transactionRepositoryJpa = transactionRepositoryJpa;
+        this.accountJpaRepository = accountJpaRepository;
     }
-
 
     @Override
     public Optional<Transaction> findById(int id) {
@@ -38,15 +36,15 @@ public class TransactionRepositoryAdapter implements TransactionRepositoryPort {
 
     @Override
     public Optional<Transaction> findByIdAndAccount(int id, Account account) {
-        AccountEntity accountEntity = accountMapper.toEntity(account);
+        AccountEntity accountEntity = accountJpaRepository.findByEmail(account.getEmail());
         return transactionRepositoryJpa
                 .findByIdAndAccountAndActiveTrue(id, accountEntity)
                 .map(transactionMapper::toDomain);
     }
 
-    @Override
     public List<Transaction> findAllByAccount(Account account) {
-        AccountEntity accountEntity = accountMapper.toEntity(account);
+        AccountEntity accountEntity = accountJpaRepository.findByEmail(account.getEmail());
+
         return transactionRepositoryJpa.findAllByAccountAndActiveTrue(accountEntity)
                 .stream()
                 .map(transactionMapper::toDomain)

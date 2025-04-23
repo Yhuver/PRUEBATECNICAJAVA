@@ -38,7 +38,7 @@ public class TransactionController {
     }
 
     @PostMapping
-    public ResponseEntity<TransactionResponseDto> createTransaction(
+    public ResponseEntity<TransactionResponseDto> createTransaction (
             @RequestBody @Valid TransactionRequestDto requestDto
     ) {
         Transaction createdTransaction = useCase.save(mapper.toDomain(requestDto));

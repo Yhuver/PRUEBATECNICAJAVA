@@ -17,6 +17,5 @@ public class TransactionResponseDto {
     private String merchant;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private int accountId;
     private boolean active;
 }
