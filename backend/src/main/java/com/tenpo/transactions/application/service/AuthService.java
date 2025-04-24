@@ -4,47 +4,39 @@ import com.tenpo.transactions.application.port.in.AuthUseCase;
 import com.tenpo.transactions.application.port.out.AccountRepositoryPort;
 import com.tenpo.transactions.application.port.out.AuthTokenPort;
 import com.tenpo.transactions.application.port.out.PasswordEncoderPort;
-import com.tenpo.transactions.domain.exception.UsernameAlreadyExistsException;
 import com.tenpo.transactions.domain.model.Account;
 import com.tenpo.transactions.application.result.AuthResult;
-import com.tenpo.transactions.infrastructure.adapter.out.jwt.JwtTokenAdapter;
-import com.tenpo.transactions.infrastructure.security.service.AccountDetailService;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService implements AuthUseCase {
 
     private final AuthTokenPort authTokenPort;
-    private final AccountDetailService userDetailsService;
     private final PasswordEncoderPort passwordEncoderPort;
-    private final AccountRepositoryPort authRepositoryPort;
-    private final JwtTokenAdapter jwtTokenAdapter;
+    private final AccountRepositoryPort accountRepositoryPort;
 
     public AuthService(
-            AuthTokenPort authTokenPort, AccountDetailService userDetailsService,
+            AuthTokenPort authTokenPort,
             PasswordEncoderPort passwordEncoderPort,
-            AccountRepositoryPort authRepositoryPort,
-            JwtTokenAdapter jwtTokenAdapter) {
+            AccountRepositoryPort accountRepositoryPort
+         ) {
         this.authTokenPort = authTokenPort;
-        this.userDetailsService = userDetailsService;
         this.passwordEncoderPort = passwordEncoderPort;
-        this.authRepositoryPort = authRepositoryPort;
-        this.jwtTokenAdapter = jwtTokenAdapter;
+        this.accountRepositoryPort = accountRepositoryPort;
     }
 
     @Override
-    public AuthResult authenticate(String username, String password) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-        if (!isPasswordValid(userDetails, password))
+    public AuthResult authenticate(String email, String rawPassword) {
+        Account account = accountRepositoryPort.findByEmail(email);
+        if (account == null) {
             throw new BadCredentialsException("Invalid credentials");
+        }
 
-        Account account = new Account();
-        account.setEmail(userDetails.getUsername());
-        account.setPassword(userDetails.getPassword());
-        account.setActive(true);
+        boolean isValid = passwordEncoderPort.matches(rawPassword, account.getPassword());
+        if (!isValid) {
+            throw new BadCredentialsException("Invalid credentials");
+        }
 
         String accessToken = authTokenPort.generateToken(account);
         String refreshToken = authTokenPort.generateRefreshToken(account);
@@ -52,30 +44,36 @@ public class AuthService implements AuthUseCase {
         return new AuthResult(accessToken, refreshToken);
     }
 
+
     @Override
     public AuthResult register(Account account) {
-        if (authRepositoryPort.existsByEmail(account.getEmail())) {
-            throw new UsernameAlreadyExistsException();
+        if (accountRepositoryPort.existsByEmail(account.getEmail())) {
+            throw new RuntimeException("Account with email " + account.getEmail() + " already exists");
         }
-        account.setPassword(passwordEncoderPort.encode(account.getPassword()));
 
-        Account saved = authRepositoryPort.save(account);
-        String accessToken = authTokenPort.generateToken(saved);
-        String refreshToken = authTokenPort.generateRefreshToken(saved);
+        String hashedPassword = passwordEncoderPort.encode(account.getPassword());
+        account.setPassword(hashedPassword);
+        account.setActive(true);
+
+        accountRepositoryPort.save(account);
+
+        String accessToken = authTokenPort.generateToken(account);
+        String refreshToken = authTokenPort.generateRefreshToken(account);
 
         return new AuthResult(accessToken, refreshToken);
     }
 
+
     @Override
     public AuthResult refreshToken(String refresh) {
         try {
-            String username = jwtTokenAdapter.extractUsername(refresh);
+            String email = authTokenPort.extractUsername(refresh);
 
-            Account account = authRepositoryPort
-                    .findByEmail(username);
+            Account account = accountRepositoryPort
+                    .findByEmail(email);
 
-            String newAccessToken = jwtTokenAdapter.generateToken(account);
-            String newRefreshToken = jwtTokenAdapter.generateRefreshToken(account);
+            String newAccessToken = authTokenPort.generateToken(account);
+            String newRefreshToken = authTokenPort.generateRefreshToken(account);
 
             return AuthResult.builder()
                     .accessToken(newAccessToken)
@@ -84,10 +82,5 @@ public class AuthService implements AuthUseCase {
         } catch (Exception e) {
             throw new RuntimeException("Failed to refresh token: " + e.getMessage());
         }
-    }
-
-
-    private boolean isPasswordValid(UserDetails userDetails, String password) {
-        return passwordEncoderPort.matches(password, userDetails.getPassword());
     }
 }

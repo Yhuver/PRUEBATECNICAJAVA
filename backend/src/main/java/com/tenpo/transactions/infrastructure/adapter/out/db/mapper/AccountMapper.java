@@ -3,14 +3,10 @@ package com.tenpo.transactions.infrastructure.adapter.out.db.mapper;
 import com.tenpo.transactions.domain.model.Account;
 import com.tenpo.transactions.infrastructure.adapter.out.db.entity.AccountEntity;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface AccountMapper {
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
-    @Mapping(target = "active", constant = "true")
-    @Mapping(target = "transactions", ignore = true)
     AccountEntity toEntity(Account domain);
     Account toDomain(AccountEntity entity);
 }
