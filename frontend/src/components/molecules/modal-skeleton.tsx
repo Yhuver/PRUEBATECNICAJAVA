@@ -23,7 +23,7 @@ export default function ModalSkeleton(
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogOverlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" />
-            <DialogContent className={`sm:max-w-md z-50 ${className}`}>
+            <DialogContent className={`sm:max-w-md z-50 ${className} bg-black`}>
                 <DialogHeader className="flex items-center justify-between space-y-4">
                     <DialogTitle className="text-2xl">{title}</DialogTitle>
                     <DialogDescription>{description}</DialogDescription>

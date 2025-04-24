@@ -48,7 +48,7 @@ export const updateTransaction = async ( id: number,  data: TransactionUpdateReq
     }
 };
 
-export const detete = async ( id : number): Promise<void> => {
+export const deleteTransaction = async ( id : number): Promise<void> => {
     try {
         const response = await api.delete(`${DELETE_TRANSACTION_URL}/${id}`);
         return response.data;

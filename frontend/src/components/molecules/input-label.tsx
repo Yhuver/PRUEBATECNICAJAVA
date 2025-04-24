@@ -22,10 +22,11 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                         <Textarea
                             id={id}
                             placeholder={placeholder}
-                            className={error ? "border-red-500" : ""}
+                            className={error ? "border-red-400" : ""}
                             {...(rest as any)}
+                            ref={ref}
                         />
-                        {error && <p className="text-sm text-red-500">{error}</p>}
+                        {error && <p className="text-sm text-red-300">{error}</p>}
                     </>
                 ) : (
                     <>
@@ -41,13 +42,13 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                                 placeholder={placeholder}
                                 min={min}
                                 className={`pr-10 ${icon ? "pl-10" : ""} ${
-                                    error ? "border-red-500" : ""
+                                    error ? "border-red-400" : ""
                                 }`}
                                 {...rest}
                                 ref={ref}
                             />
                         </div>
-                        {error && <p className="text-sm text-red-500">{error}</p>}
+                        {error && <p className="text-sm text-red-300">{error}</p>}
                     </>
                 )}
             </div>
