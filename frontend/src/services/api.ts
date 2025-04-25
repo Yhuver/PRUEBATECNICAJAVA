@@ -1,9 +1,9 @@
-import axios, { AxiosError, AxiosRequestConfig } from "axios";
-import {API_URL, REFRESH_URL} from "@/constants/endpoints";
-import {HOME_ROUTE} from "@/constants/routes.ts";
+import axios, {AxiosError, AxiosRequestConfig} from "axios";
+import {API_URL} from "@/constants/endpoints";
 
 export const api = axios.create({
     baseURL: API_URL,
+    withCredentials: true,
     headers: {
         "Content-Type": "application/json",
     },
@@ -17,22 +17,12 @@ const processQueue = (token: string | null, error: unknown) => {
         if (token) prom.resolve(token);
         else prom.reject(error);
     });
-
     failedQueue = [];
 };
 
-export const getAuthHeaders = (): { Authorization?: string } => {
-    const token = localStorage.getItem("accessToken");
-    return token ? { Authorization: `Bearer ${token}` } : {};
-};
+const interceptorEnabled = true;
 
-api.interceptors.request.use((config) => {
-    const token = localStorage.getItem("accessToken");
-    if (token && config.headers) {
-        config.headers["Authorization"] = `Bearer ${token}`;
-    }
-    return config;
-});
+if (interceptorEnabled) {
 
 api.interceptors.response.use(
     (response) => response,
@@ -40,14 +30,13 @@ api.interceptors.response.use(
         const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
 
         if (error.response?.status === 401 && !originalRequest._retry) {
+            console.log("Token expired, attempting to refresh...");
             originalRequest._retry = true;
 
             if (isRefreshing) {
                 return new Promise((resolve, reject) => {
                     failedQueue.push({
-                        resolve: (token: string) => {
-                            if (originalRequest.headers)
-                                originalRequest.headers["Authorization"] = `Bearer ${token}`;
+                        resolve: () => {
                             resolve(api(originalRequest));
                         },
                         reject: (err) => reject(err),
@@ -55,28 +44,19 @@ api.interceptors.response.use(
                 });
             }
 
+            console.log("Starting token refresh...");
             isRefreshing = true;
 
             try {
-                const refreshToken = localStorage.getItem("refreshToken");
-                const res = await axios.post(`${REFRESH_URL}`, {
-                    refreshToken,
-                });
-
-                const newToken = res.data.token;
-                localStorage.setItem("accessToken", newToken);
-                processQueue(newToken, null);
-                if (originalRequest.headers)
-                    originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
-
+                // await api.post(REFRESH_URL);
+                console.log("Token refreshed via httpOnly cookie.");
+                processQueue(null, null);
                 return api(originalRequest);
             } catch (err) {
                 processQueue(null, err);
-                localStorage.removeItem("accessToken");
-                localStorage.removeItem("refreshToken");
-                window.location.href = HOME_ROUTE;
                 return Promise.reject(err);
             } finally {
+                console.log("Finished token refresh, resetting isRefreshing...");
                 isRefreshing = false;
             }
         }
@@ -84,3 +64,4 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+}

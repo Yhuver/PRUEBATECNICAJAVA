@@ -6,5 +6,6 @@ import com.tenpo.transactions.domain.model.Account;
 public interface AuthUseCase {
     AuthResult authenticate(String username, String password);
     AuthResult register(Account account);
-    AuthResult refreshToken(String refresh);
+    String refreshAccessToken(String accessToken);
+    boolean checkSession(String token);
 }

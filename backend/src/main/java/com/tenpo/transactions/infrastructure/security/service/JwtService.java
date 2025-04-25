@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Date;
 
 @Service
@@ -22,26 +23,36 @@ public class JwtService {
     private String SECRET_KEY;
 
     @Value("${jwt.expiration}")
-    private int JWT_EXPIRATION;
+    private int ACCESS_TOKEN_EXPIRATION;
 
     @Value("${jwt.refreshExpiration}")
     private long REFRESH_TOKEN_EXPIRATION;
 
-    private SecretKey key;
+    private SecretKey jwtSecretKey;
 
     @PostConstruct
     public void init() {
-        this.key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+        this.jwtSecretKey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
 
     // Generate JWT token
-    public String generateToken(UserDetails userDetails) {
+    public String generateAccessToken(UserDetails userDetails) {
+        return Jwts.builder()
+                .subject(userDetails.getUsername())
+                .claim("type", "access")
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
+                .signWith(jwtSecretKey)
+                .compact();
+    }
+
+    public String generateRefreshToken(UserDetails userDetails) {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
                 .claim("type", "refresh")
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION))
-                .signWith(key)
+                .signWith(jwtSecretKey)
                 .compact();
     }
 
@@ -49,7 +60,7 @@ public class JwtService {
     public String getUsernameFromToken(String token) {
         try {
             Claims claims = Jwts.parser()
-                    .verifyWith(key)
+                    .verifyWith(jwtSecretKey)
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
@@ -64,41 +75,25 @@ public class JwtService {
     public boolean validateJwtToken(String token) {
         try {
             Jws<Claims> claimsJws = Jwts.parser()
-                    .verifyWith(key)
+                    .verifyWith(jwtSecretKey)
                     .build()
                     .parseSignedClaims(token);
 
-            Claims claims = claimsJws.getPayload();
+            Date expirationDate = claimsJws.getPayload().getExpiration();
+            Date now = new Date();
 
-            String tokenType = claims.get("type", String.class);
-            if (!"refresh".equals(tokenType)) {
-                logger.error("The token is not a refresh token");
+            if (expirationDate.before(now)) {
+                logger.error("JWT token is expired.");
                 return false;
             }
 
             return true;
-        } catch (SecurityException e) {
-            logger.error("Invalid JWT signature: {}", e.getMessage());
-        } catch (MalformedJwtException e) {
-            logger.error("Invalid JWT token: {}", e.getMessage());
         } catch (ExpiredJwtException e) {
             logger.error("JWT token is expired: {}", e.getMessage());
-        } catch (UnsupportedJwtException e) {
-            logger.error("JWT token is unsupported: {}", e.getMessage());
-        } catch (IllegalArgumentException e) {
-            logger.error("JWT claims string is empty: {}", e.getMessage());
+            return false;
+        } catch (JwtException e) {
+            logger.error("JWT validation failed: {}", e.getMessage());
+            return false;
         }
-        return false;
     }
-
-    //Generate RefreshToken
-    public String generateRefreshToken(UserDetails userDetails) {
-        return Jwts.builder()
-                .subject(userDetails.getUsername())
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION))
-                .signWith(key)
-                .compact();
-    }
-
 }

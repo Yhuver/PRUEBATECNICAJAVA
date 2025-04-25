@@ -1,25 +1,21 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import React, {createContext, useState, ReactNode} from 'react';
 import {login, logout, register} from '@/services/auth-service.ts';
 import {LoginRequest, RegisterRequest} from "@/interfaces/auth-interface.ts";
-import {getAuthHeaders} from "@/services/api.ts";
 
 interface AuthContextType {
     isAuthenticated: boolean;
     login: (credentials: LoginRequest) => Promise<void>;
     register: (credentials: RegisterRequest) => void;
     logout: () => void;
-    getAuthHeaders: () => { Authorization?: string };
+    // loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({children}) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-
-    useEffect(() => {
-        const token = localStorage.getItem('accessToken');
-        setIsAuthenticated(!!token);
-    }, []);
+    // const [loading, setLoading] = useState(true);
+    //
 
     const handleLogin = async (credentials: LoginRequest) => {
         await login(credentials);
@@ -31,8 +27,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setIsAuthenticated(true);
     }
 
-    const handleLogout = () => {
-        logout();
+    const handleLogout = async () => {
+        await logout();
         setIsAuthenticated(false);
     };
 
@@ -41,12 +37,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         login: handleLogin,
         logout: handleLogout,
         register: handleRegister,
-        getAuthHeaders,
+        // loading,
     };
 
-    return <AuthContext.Provider value={values} >{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuthContext = (): AuthContextType => {
     const context = React.useContext(AuthContext);
     if (!context) {

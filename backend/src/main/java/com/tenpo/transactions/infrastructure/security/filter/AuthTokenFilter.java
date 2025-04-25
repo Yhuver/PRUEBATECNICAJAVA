@@ -1,20 +1,24 @@
 package com.tenpo.transactions.infrastructure.security.filter;
 
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import com.tenpo.transactions.infrastructure.security.service.AccountDetailService;
 import com.tenpo.transactions.infrastructure.security.service.JwtService;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.authentication.*;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.authentication.*;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Component;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.Cookie;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
+
 import java.io.IOException;
+
 
 @Component
 public class AuthTokenFilter extends OncePerRequestFilter {
@@ -34,40 +38,38 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        try {
-            String jwt = parseJwt(request);
-            if (jwt != null) {
-                logger.debug("JWT Token: {}", jwt);
+        String path = request.getServletPath();
+        if (path.startsWith("/api/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        String jwt = getJwtFromCookies(request);
+        if (jwt != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            String username = jwtService.getUsernameFromToken(jwt);
+            if (username != null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                 if (jwtService.validateJwtToken(jwt)) {
-                    String username = jwtService.getUsernameFromToken(jwt);
-                    logger.debug("Username extracted from token: {}", username);
-
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                    logger.debug("User details loaded for: {}", username);
-
-                    UsernamePasswordAuthenticationToken authentication =
+                    UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(
-                                    userDetails,
-                                    null,
-                                    userDetails.getAuthorities()
-                            );
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                    logger.debug("User authentication set for: {}", username);
+                                    userDetails, null, userDetails.getAuthorities());
+
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request));
+
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
-            } else {
-                logger.warn("No JWT token found in the request header.");
             }
-        } catch (Exception e) {
-            logger.error("Cannot set user authentication: {}", e.getMessage());
         }
         filterChain.doFilter(request, response);
     }
 
-    private String parseJwt(HttpServletRequest request) {
-        String headerAuth = request.getHeader("Authorization");
-        if (headerAuth != null && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7);
+    private String getJwtFromCookies(HttpServletRequest request) {
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("accessToken".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
         }
         return null;
     }

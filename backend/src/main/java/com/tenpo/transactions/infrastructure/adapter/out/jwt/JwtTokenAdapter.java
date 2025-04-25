@@ -16,9 +16,9 @@ public class JwtTokenAdapter implements AuthTokenPort {
     }
 
     @Override
-    public String generateToken(Account account) {
+    public String generateAccessToken(Account account) {
         UserDetails userDetails = new AccountToUserDetailsAdapter(account);
-        return jwtService.generateToken(userDetails);
+        return jwtService.generateAccessToken(userDetails);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class JwtTokenAdapter implements AuthTokenPort {
     }
 
     @Override
-    public boolean isTokenValid(String token) {
+    public boolean isValid(String token) {
         return jwtService.validateJwtToken(token);
     }
 

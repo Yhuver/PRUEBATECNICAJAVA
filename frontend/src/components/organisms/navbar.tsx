@@ -25,8 +25,6 @@ export default function Navbar() {
         setLoginOpen(false);
     };
 
-    console.log("Navbar render. isAuthenticated:", isAuthenticated);
-
     return (
         <header className="sticky top-0 z-50 w-full border-b border-zinc-800 bg-black">
             <div className="container flex h-16 items-center justify-between">

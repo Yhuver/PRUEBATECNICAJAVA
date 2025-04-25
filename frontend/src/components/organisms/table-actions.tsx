@@ -5,7 +5,7 @@ import {
     AlertDialogContent,
     AlertDialogDescription,
     AlertDialogFooter,
-    AlertDialogHeader,
+    AlertDialogHeader, AlertDialogOverlay,
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
@@ -50,6 +50,7 @@ export function TableActions({ row, refetchTable  }: TableActionsProps) {
                 </Button>
 
                 <AlertDialog>
+                    <AlertDialogOverlay className={"fixed inset-0 bg-black/50 backdrop-blur-sm z-40"}/>
                     <AlertDialogTrigger asChild>
                         <Button
                             variant="outline"
@@ -63,7 +64,6 @@ export function TableActions({ row, refetchTable  }: TableActionsProps) {
                             )}
                         </Button>
                     </AlertDialogTrigger>
-
                     <AlertDialogContent>
                         <AlertDialogHeader>
                             <AlertDialogTitle>¿Estás seguro de que quieres eliminar?</AlertDialogTitle>
@@ -76,6 +76,7 @@ export function TableActions({ row, refetchTable  }: TableActionsProps) {
                             <AlertDialogCancel>Cancelar</AlertDialogCancel>
                             <AlertDialogAction asChild>
                                 <Button
+                                    className={"text-white"}
                                     variant="destructive"
                                     disabled={loading}
                                     onClick={handleDelete}

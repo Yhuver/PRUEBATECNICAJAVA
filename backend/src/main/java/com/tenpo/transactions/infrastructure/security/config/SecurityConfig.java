@@ -35,13 +35,15 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-resources/**",
-            "/webjars/**"
+            "/webjars/**",
     };
 
     private static final String[] AUTH_ENDPOINTS = {
             "/api/auth/signin",
             "/api/auth/signup",
             "/api/auth/refresh",
+            "/api/auth/logout",
+            "/api/auth/check-session"
     };
 
     @Bean
@@ -55,10 +57,10 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-
                         .requestMatchers(SWAGGER_WHITELIST).permitAll()
                         .requestMatchers(AUTH_ENDPOINTS).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest()
+                        .authenticated()
                 )
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
 

@@ -38,7 +38,7 @@ public class AuthService implements AuthUseCase {
             throw new BadCredentialsException("Invalid credentials");
         }
 
-        String accessToken = authTokenPort.generateToken(account);
+        String accessToken = authTokenPort.generateAccessToken(account);
         String refreshToken = authTokenPort.generateRefreshToken(account);
 
         return new AuthResult(accessToken, refreshToken);
@@ -57,7 +57,7 @@ public class AuthService implements AuthUseCase {
 
         accountRepositoryPort.save(account);
 
-        String accessToken = authTokenPort.generateToken(account);
+        String accessToken = authTokenPort.generateAccessToken(account);
         String refreshToken = authTokenPort.generateRefreshToken(account);
 
         return new AuthResult(accessToken, refreshToken);
@@ -65,22 +65,24 @@ public class AuthService implements AuthUseCase {
 
 
     @Override
-    public AuthResult refreshToken(String refresh) {
+    public String refreshAccessToken(String accessToken) {
         try {
-            String email = authTokenPort.extractUsername(refresh);
-
-            Account account = accountRepositoryPort
-                    .findByEmail(email);
-
-            String newAccessToken = authTokenPort.generateToken(account);
-            String newRefreshToken = authTokenPort.generateRefreshToken(account);
-
-            return AuthResult.builder()
-                    .accessToken(newAccessToken)
-                    .refreshToken(newRefreshToken)
-                    .build();
+            String email = authTokenPort.extractUsername(accessToken);
+            if (!authTokenPort.isValid(accessToken)) {
+                throw new RuntimeException("Refresh token has expired or is invalid.");
+            }
+            Account account = accountRepositoryPort.findByEmail(email);
+            if (account == null) {
+                throw new RuntimeException("Account not found.");
+            }
+            return authTokenPort.generateAccessToken(account);
         } catch (Exception e) {
             throw new RuntimeException("Failed to refresh token: " + e.getMessage());
         }
+    }
+
+    @Override
+    public boolean checkSession(String token) {
+        return authTokenPort.isValid(token);
     }
 }

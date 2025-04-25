@@ -2,8 +2,6 @@ import { Button } from "@/components/ui/button.tsx";
 import ModalSkeleton from "@/components/molecules/modal-skeleton.tsx";
 import LoginForm from "@/components/organisms/login-form.tsx";
 import {toast} from "sonner";
-import {useNavigate} from "react-router";
-import {TRANSACTION_ROUTE} from "@/constants/routes.ts";
 
 interface LoginModalProps {
     open: boolean;
@@ -12,14 +10,12 @@ interface LoginModalProps {
 }
 
 export default function LoginModal({ open, onOpenChange, setRegisterOpen }: LoginModalProps) {
-    const navigate = useNavigate();
 
     const onSuccess = () => {
         toast.success("Sesión iniciada correctamente", {
             description: "Bienvenido de nuevo 👋",
         });
         onOpenChange(false)
-        navigate(TRANSACTION_ROUTE)
     }
 
     const onError = () => {

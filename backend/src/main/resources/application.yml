@@ -1,10 +1,13 @@
 spring:
+  config:
+    activate:
+      on-profile: dev
   application:
     name: transactions
   datasource:
-    url: jdbc:postgresql://localhost:5432/tenpo_db
-    username: postgres
-    password: root
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -13,6 +16,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+cookie:
+  secure: false
 
 logging:
   level:
@@ -23,9 +28,9 @@ logging:
         security: DEBUG
 
 jwt:
-  secret: GokuSSj2Mysecregtfrdesww233eggtffeeddgkjjhhtdhttebd54ndhdhfhhhshs8877465sbbdd
-  expiration: 3600000
-  refreshExpiration: 2592000000
+  secret: ${JWT_SECRET}
+  expiration: 900000
+  refreshExpiration: 604800000
 
 ---
 # Perfil de pruebas con H2
@@ -55,3 +60,5 @@ logging:
     org:
       springframework:
         security: DEBUG
+cookie:
+  secure: false

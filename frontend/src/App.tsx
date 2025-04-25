@@ -6,23 +6,36 @@ import Navbar from "@/components/organisms/navbar.tsx";
 import {Toaster} from "@/components/ui/sonner.tsx";
 import Home from "@/components/pages/Home.tsx";
 import './App.css'
-
+import {useAuthContext} from "@/contexts/AuthContext.tsx";
+import {JSX} from "react";
 
 function App() {
     return (
         <div className="bg-black">
             <BrowserRouter>
-                <Navbar/>
+                <Navbar />
                 <Routes>
-                    <Route path="/" element={<Navigate to={HOME_ROUTE} replace />} />
-                    <Route path={HOME_ROUTE} element={<Home/>}/>
-                    <Route path={TRANSACTION_ROUTE} element={<Transaction/>}/>
+                    <Route path="/" element={<Navigate to={HOME_ROUTE} replace />}/>
+                    <Route path={HOME_ROUTE} element={<Home />} />
+                    <Route path={TRANSACTION_ROUTE} element={
+                        <ProtectedRoute>
+                            <Transaction />
+                        </ProtectedRoute>
+                    } />
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </BrowserRouter>
-            <Toaster/>
+            <Toaster />
         </div>
     );
+}
+
+function ProtectedRoute({ children }: { children: JSX.Element }) {
+    const { isAuthenticated } = useAuthContext();
+    if (!isAuthenticated) {
+        return <Navigate to={HOME_ROUTE} replace />;
+    }
+    return children;
 }
 
 export default App
