@@ -1,12 +1,12 @@
 import { useState} from "react";
-import LoginModal from "@/components/templates/login-modal.tsx";
-import RegisterModal from "@/components/templates/register-modal.tsx";
 import { Link } from "react-router";
 import { useAuthContext } from "@/contexts/AuthContext.tsx";
-import NavbarUnlogged from "@/components/organisms/navbar-unlogged.tsx";
-import NavbarLogged from "@/components/organisms/navbar-logged.tsx";
-import NavbarOptions from "@/components/organisms/navbar-options.tsx";
 import {HOME_ROUTE} from "@/constants/routes.ts";
+import NavbarOptions from "@/components/organisms/navbar/NavbarOptions.tsx";
+import NavbarUnlogged from "@/components/organisms/navbar/NavbarUnlogged.tsx";
+import NavbarLogged from "@/components/organisms/navbar/NavbarLogged.tsx";
+import LoginModal from "@/components/organisms/auth/LoginModal.tsx";
+import RegisterModal from "@/components/organisms/auth/RegisterModal.tsx";
 
 export default function Navbar() {
 
@@ -28,6 +28,7 @@ export default function Navbar() {
     return (
         <header className="sticky top-0 z-50 w-full border-b border-zinc-800 bg-black">
             <div className="container flex h-16 items-center justify-between">
+
                 <div className="flex items-center gap-6">
                     <Link to={HOME_ROUTE} className="font-bold text-xl">
                         TransactionApp

@@ -23,6 +23,11 @@ export const AddTransactionWithoutTransformSchema = z.object({
 });
 
 export const UpdateTransactionSchema = z.object({
-    amount: z.number().gte(0, AMOUNT_ERROR_MESSAGE),
+    amount: z
+        .string()
+        .refine((val) => !isNaN(Number(val)) && Number(val) >= 0, {
+            message: AMOUNT_ERROR_MESSAGE,
+        })
+        .transform((val) => Number(val)),
     merchant: z.string().min(1, MERCHANT_REQUIRED_MESSAGE),
 });

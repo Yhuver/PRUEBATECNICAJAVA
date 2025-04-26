@@ -10,7 +10,8 @@ type DraggableRowProps<T extends z.ZodTypeAny> = {
     row: Row<z.infer<T>>;
 };
 
-export default function TableDraggableRow<T extends z.ZodTypeAny>({ row }: DraggableRowProps<T>) {
+export default function DraggableRow<T extends z.ZodTypeAny>({ row }: DraggableRowProps<T>) {
+
     const { transform, transition, setNodeRef, isDragging } = useSortable({
         id: row.original.id,
     });

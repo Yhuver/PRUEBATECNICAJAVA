@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import InputField from "@/components/molecules/input-label";
-import {useRegisterForm} from "@/hooks/useRegisterForm";
+import { Button } from "@/components/ui/button.tsx";
+import {useRegisterForm} from "@/hooks/useRegisterForm.tsx";
+import InputField from "@/components/molecules/InputField.tsx";
 
 interface RegisterFormProps {
     onSuccess: () => void;

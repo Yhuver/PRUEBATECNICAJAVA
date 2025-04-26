@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog.tsx";
 import { ReactNode } from "react";
 
-interface ModalSkeletonProps {
+interface ModalWrapperProps {
     open: boolean;
     title: string;
     onOpenChange: (open: boolean) => void;
@@ -17,8 +17,8 @@ interface ModalSkeletonProps {
     children: ReactNode;
 }
 
-export default function ModalSkeleton(
-    { className, open, onOpenChange, title, description, children }: ModalSkeletonProps
+export default function ModalWrapper(
+    { className, open, onOpenChange, title, description, children }: ModalWrapperProps
 ) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>

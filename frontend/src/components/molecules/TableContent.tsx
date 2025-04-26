@@ -1,6 +1,6 @@
 import { TableBody, TableRow, TableCell } from "@/components/ui/table"
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
-import DraggableRow from "@/components/organisms/table-draggable-row"
+import DraggableRow from "@/components/organisms/datatable/DraggableRow.tsx"
 import { UniqueIdentifier } from "@dnd-kit/core"
 import { Table } from "@tanstack/react-table"
 
@@ -9,7 +9,7 @@ interface TableContentProps<T extends { id: string | number }> {
     dataIds: UniqueIdentifier[]
 }
 
-export default function DataTableContent<T extends { id: string | number }>({ table, dataIds }: TableContentProps<T>) {
+export default function TableContent<T extends { id: string | number }>({ table, dataIds }: TableContentProps<T>) {
     return (
         <TableBody>
             {table.getRowModel().rows.length > 0 ? (

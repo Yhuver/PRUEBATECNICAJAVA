@@ -1,11 +1,11 @@
 import { TableHead, TableRow, TableHeader as TableHeaderS } from "@/components/ui/table.tsx"
 import { flexRender, Table } from "@tanstack/react-table"
 
-interface TableContentProps<T extends { id: string | number }> {
+interface TableHeaderProps<T extends { id: string | number }> {
     table: Table<T>
 }
 
-export default function DataTableHeader<T extends { id: string | number }>({ table }: TableContentProps<T>) {
+export default function TableHeader<T extends { id: string | number }>({ table }: TableHeaderProps<T>) {
     return (
         <TableHeaderS className="sticky top-0 z-10">
             {table.getHeaderGroups().map((headerGroup) => (

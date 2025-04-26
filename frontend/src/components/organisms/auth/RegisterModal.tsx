@@ -1,7 +1,9 @@
-import ModalSkeleton from "@/components/molecules/modal-skeleton.tsx";
-import RegisterForm from "@/components/organisms/register-form.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {toast} from "sonner";
+import {TRANSACTION_ROUTE} from "@/constants/routes.ts";
+import {useNavigate} from "react-router";
+import ModalWrapper from "@/components/templates/ModalWrapper.tsx";
+import RegisterForm from "@/components/organisms/auth/RegisterForm.tsx";
 
 
 interface RegisterFormProps {
@@ -12,10 +14,12 @@ interface RegisterFormProps {
 
 export default function RegisterModal({open, onOpenChange, setLoginOpen }: RegisterFormProps) {
 
+    const navigate = useNavigate();
 
     const onSuccess = () => {
-        toast.success("Registro satisfactorio!")
-        onOpenChange(false)
+        toast.success("Ahora puedes empezar a explorar.");
+        onOpenChange(false);
+        navigate(TRANSACTION_ROUTE);
     }
 
     const onError = () => {
@@ -25,7 +29,7 @@ export default function RegisterModal({open, onOpenChange, setLoginOpen }: Regis
     }
 
     return (
-        <ModalSkeleton
+        <ModalWrapper
             open={open}
             onOpenChange={onOpenChange}
             title="Registrarse"
@@ -51,6 +55,6 @@ export default function RegisterModal({open, onOpenChange, setLoginOpen }: Regis
                     Inicia sesión
                 </Button>
             </div>
-        </ModalSkeleton>
+        </ModalWrapper>
     );
 }

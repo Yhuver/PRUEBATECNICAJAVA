@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import InputField from "@/components/molecules/input-label";
-import { useLoginForm } from "@/hooks/useLoginForm";
+import { Button } from "@/components/ui/button.tsx";
+import { useLoginForm } from "@/hooks/useLoginForm.tsx";
+import InputField from "@/components/molecules/InputField.tsx";
 
 interface LoginFormProps {
     onSuccess: () => void;

@@ -53,17 +53,17 @@ export const logout = async (): Promise<void> => {
     }
 };
 
-export const checkSession = async (): Promise<void> => {
+export const checkSession = async (): Promise<boolean> => {
     try {
         const response = await api.get(CHECK_URL);
         return response.data;
-    }
-    catch (error){
-        if (error instanceof  AxiosError){
-            throw error.response?.data || "Ha ocurrido un error al verificar la sesión."
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            throw error.response?.data || "Ha ocurrido un error al verificar la sesión.";
         }
+        throw "Ha ocurrido un error inesperado.";
     }
-}
+};
 
 export const refreshSession = async (): Promise<void> => {
     try {

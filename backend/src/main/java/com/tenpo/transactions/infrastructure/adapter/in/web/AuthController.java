@@ -68,21 +68,17 @@ public class AuthController {
     }
 
     @GetMapping("check-session")
-    public ResponseEntity<?> checkSession(@CookieValue(value = "accessToken", required = false) String accessToken ) {
+    public ResponseEntity<Boolean> checkSession(@CookieValue(value = "accessToken", required = false) String accessToken) {
         try {
-            if (accessToken != null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .build();
+            if (accessToken == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
             }
             boolean isActive = authUseCase.checkSession(accessToken);
-            if (isActive) {
-                return ResponseEntity.ok().build();
-            }
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .build();
+
+            return isActive ? ResponseEntity.ok(true) : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
     }
+
 }

@@ -1,9 +1,9 @@
-import {useAddTransactionForm} from "@/hooks/useTransactionForm.tsx";
-import InputField from "@/components/molecules/input-label.tsx";
 import {TRANSACTION_ROUTE} from "@/constants/routes.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {useNavigate} from "react-router";
 import {Banknote} from "lucide-react";
+import {useTransactionForm} from "@/hooks/useTransactionForm.tsx";
+import InputField from "@/components/molecules/InputField.tsx";
 
 
 interface TransactionFormProps {
@@ -11,14 +11,14 @@ interface TransactionFormProps {
     onError?: (msg: string) => void;
 }
 
-export default function TransactionForm( { onSuccess, onError }: TransactionFormProps ){
+export default function AddTransactionForm({ onSuccess, onError }: TransactionFormProps ){
     const navigate = useNavigate();
 
     const {
         register,
         handleSend,
         formState: { errors, isSubmitting },
-    } = useAddTransactionForm({ onSuccess, onError });
+    } = useTransactionForm({ onSuccess, onError });
 
     return (
        <form onSubmit={handleSend} className="space-y-8">
@@ -56,6 +56,5 @@ export default function TransactionForm( { onSuccess, onError }: TransactionForm
                </Button>
            </div>
        </form>
-
    );
 }

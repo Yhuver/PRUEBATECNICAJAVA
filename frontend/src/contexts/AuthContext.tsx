@@ -1,5 +1,5 @@
-import React, {createContext, useState, ReactNode} from 'react';
-import {login, logout, register} from '@/services/auth-service.ts';
+import React, {createContext, useState, ReactNode, useEffect} from 'react';
+import {checkSession, login, logout, register} from '@/services/auth-service.ts';
 import {LoginRequest, RegisterRequest} from "@/interfaces/auth-interface.ts";
 
 interface AuthContextType {
@@ -14,8 +14,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({children}) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-    // const [loading, setLoading] = useState(true);
-    //
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const isValid = await checkSession();
+                setIsAuthenticated(isValid);
+            } catch {
+                setIsAuthenticated(false);
+            }
+        })();
+    }, []);
 
     const handleLogin = async (credentials: LoginRequest) => {
         await login(credentials);
@@ -37,7 +46,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({children}) => {
         login: handleLogin,
         logout: handleLogout,
         register: handleRegister,
-        // loading,
     };
 
     return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;

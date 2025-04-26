@@ -1,29 +1,11 @@
-import {useEffect, useState } from "react";
-import RegisterModal from "@/components/templates/register-modal.tsx";
-import LoginModal from "@/components/templates/login-modal.tsx";
+import { useState } from "react";
+import LoginModal from "@/components/organisms/auth/LoginModal.tsx";
+import RegisterModal from "@/components/organisms/auth/RegisterModal.tsx";
 
 
 export default function Home() {
     const [loginOpen, setLoginOpen] = useState(false)
     const [registerOpen, setRegisterOpen] = useState(false)
-
-    useEffect(() => {
-        const handleOpenLogin = () => {
-            setLoginOpen(true)
-        }
-
-        const handleOpenRegister = () => {
-            setRegisterOpen(true)
-        }
-
-        document.addEventListener("open-login", handleOpenLogin)
-        document.addEventListener("open-register", handleOpenRegister)
-
-        return () => {
-            document.removeEventListener("open-login", handleOpenLogin)
-            document.removeEventListener("open-register", handleOpenRegister)
-        }
-    }, [])
 
     return (
         <div className="flex flex-col items-center justify-center min-h-[80vh] space-y-8">

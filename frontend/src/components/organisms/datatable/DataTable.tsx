@@ -1,11 +1,11 @@
 import { Table } from "@/components/ui/table.tsx"
-import { useDataTable } from "@/hooks/useDataTable"
-import TablePagination from "@/components/molecules/table-pagination.tsx"
-import TableContent from "@/components/molecules/table-content.tsx"
-import DataTableHeader from "@/components/molecules/table-header.tsx"
+import { useDataTable } from "@/hooks/useDataTable.tsx"
 import { closestCenter, DndContext } from "@dnd-kit/core"
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
 import { ColumnDef } from "@tanstack/react-table"
+import TableHeader from "@/components/molecules/TableHeader.tsx";
+import TableContent from "@/components/molecules/TableContent.tsx";
+import TablePagination from "@/components/molecules/TablePagination.tsx";
 
 type RowWithId = { id: number }
 
@@ -21,6 +21,8 @@ export default function DataTable<T extends RowWithId>({ columns, data: initialD
         totalCount,
     } = useDataTable(initialData, columns)
 
+    const pageSizes = [10, 20, 30, 40, 50];
+
     return (
         <div className="relative flex flex-col gap-4 overflow-auto space-y-6 px-4 lg:px-6">
             <div className="overflow-hidden rounded-lg border">
@@ -32,7 +34,7 @@ export default function DataTable<T extends RowWithId>({ columns, data: initialD
                     id={sortableId}
                 >
                     <Table>
-                        <DataTableHeader table={table} />
+                        <TableHeader table={table} />
                         <TableContent table={table} dataIds={dataIds} />
                     </Table>
                 </DndContext>
@@ -41,7 +43,7 @@ export default function DataTable<T extends RowWithId>({ columns, data: initialD
                 <div className="hidden flex-1 text-sm text-muted-foreground lg:flex">
                     {selectedCount} de {totalCount} fila(s) seleccionada(s).
                 </div>
-                <TablePagination table={table} />
+                <TablePagination pageSizes={pageSizes} table={table} />
             </div>
         </div>
     )

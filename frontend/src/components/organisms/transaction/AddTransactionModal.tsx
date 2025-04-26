@@ -1,8 +1,8 @@
-import ModalSkeleton from "@/components/molecules/modal-skeleton.tsx";
-import TransactionForm from "@/components/organisms/transaction-form.tsx";
-import {toast} from "sonner";
-import {useNavigate} from "react-router";
+import AddTransactionForm from "@/components/organisms/transaction/AddTransactionForm.tsx";
 import {TRANSACTION_ROUTE} from "@/constants/routes.ts";
+import {useNavigate} from "react-router";
+import {toast} from "sonner";
+import ModalWrapper from "@/components/templates/ModalWrapper.tsx";
 
 interface TransactionModalProps {
     open: boolean;
@@ -10,7 +10,7 @@ interface TransactionModalProps {
     refetchTable: () => void;
 }
 
-export default function TransactionModal({ open, onOpenChange, refetchTable }: TransactionModalProps) {
+export default function AddTransactionModal({ open, onOpenChange, refetchTable }: TransactionModalProps) {
 
     const navigate = useNavigate();
 
@@ -28,17 +28,16 @@ export default function TransactionModal({ open, onOpenChange, refetchTable }: T
     }
 
     return (
-        <ModalSkeleton
+        <ModalWrapper
             open={open}
             onOpenChange={onOpenChange}
             title="Añadir Transacción"
             description="Agrega los detalles de la nueva transacción"
         >
-            <TransactionForm
+            <AddTransactionForm
                 onSuccess={onSuccess}
                 onError={onError}
             />
-
-        </ModalSkeleton>
+        </ModalWrapper>
     );
 }

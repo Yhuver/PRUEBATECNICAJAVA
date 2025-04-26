@@ -1,5 +1,5 @@
 import axios, {AxiosError, AxiosRequestConfig} from "axios";
-import {API_URL} from "@/constants/endpoints";
+import {API_URL, REFRESH_URL} from "@/constants/endpoints";
 
 export const api = axios.create({
     baseURL: API_URL,
@@ -20,48 +20,32 @@ const processQueue = (token: string | null, error: unknown) => {
     failedQueue = [];
 };
 
-const interceptorEnabled = true;
-
-if (interceptorEnabled) {
-
 api.interceptors.response.use(
     (response) => response,
     async (error: AxiosError) => {
         const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
-
         if (error.response?.status === 401 && !originalRequest._retry) {
-            console.log("Token expired, attempting to refresh...");
             originalRequest._retry = true;
-
             if (isRefreshing) {
                 return new Promise((resolve, reject) => {
                     failedQueue.push({
-                        resolve: () => {
-                            resolve(api(originalRequest));
-                        },
+                        resolve: () => resolve(api(originalRequest)),
                         reject: (err) => reject(err),
                     });
                 });
             }
-
-            console.log("Starting token refresh...");
             isRefreshing = true;
-
             try {
-                // await api.post(REFRESH_URL);
-                console.log("Token refreshed via httpOnly cookie.");
-                processQueue(null, null);
+                const response = await api.post(REFRESH_URL);
+                const { accessToken } = response.data;
+                processQueue(null, accessToken);
                 return api(originalRequest);
-            } catch (err) {
-                processQueue(null, err);
+            } catch (err ) {
+                processQueue(err as string, null);
                 return Promise.reject(err);
             } finally {
-                console.log("Finished token refresh, resetting isRefreshing...");
                 isRefreshing = false;
             }
         }
-
         return Promise.reject(error);
-    }
-);
-}
+    });

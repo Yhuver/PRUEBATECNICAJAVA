@@ -6,11 +6,10 @@ import {Table} from "@tanstack/react-table";
 
 interface TablePaginationProps<T> {
     table: Table<T>
+    pageSizes: number[];
 }
 
-const FILTER_PER_PAGE = [10, 20, 30, 40, 50]
-
-export default function TablePagination<T>({ table }: TablePaginationProps<T>){
+export default function TablePagination<T>({ table, pageSizes }: TablePaginationProps<T>){
     return (
 
         <div className="flex w-full items-center gap-8 lg:w-fit">
@@ -30,7 +29,7 @@ export default function TablePagination<T>({ table }: TablePaginationProps<T>){
                         />
                     </SelectTrigger>
                     <SelectContent side="top">
-                        {FILTER_PER_PAGE.map((pageSize) => (
+                        {pageSizes.map((pageSize) => (
                             <SelectItem key={pageSize} value={`${pageSize}`}>
                                 {pageSize}
                             </SelectItem>
