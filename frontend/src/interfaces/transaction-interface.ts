@@ -1,7 +1,7 @@
 
 export interface TransactionResponse {
     id: number;
-    amount : number;
+    amount : number | string;
     merchant: string;
     createAt: Date;
     updatedAt: Date;

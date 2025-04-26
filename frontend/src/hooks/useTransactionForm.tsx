@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
+import {addTransaction, getTransactionById, updateTransaction} from "@/services/transaction-service";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {useCallback, useEffect, useState} from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
     AddTransactionSchema,
     AddTransactionWithoutTransformSchema,
 } from "@/schemas/transaction-schema";
 import { toast } from "sonner";
-import { addTransaction, updateTransaction } from "@/services/transaction-service";
 
 type TransactionFormInput = z.infer<typeof AddTransactionWithoutTransformSchema>;
 type TransactionFormData = z.infer<typeof AddTransactionSchema>;
@@ -32,21 +32,27 @@ export function useTransactionForm({ transactionId, onSuccess, onError }: Transa
 
     const { reset } = form;
 
+
+    const memoizedReset = useCallback((values: TransactionFormInput) => {
+        reset(values);
+    }, [reset]);
+
     useEffect(() => {
         if (!transactionId) return;
 
         (async () => {
             try {
                 setIsLoading(true);
-                const response = { data: { amount: "1000", merchant: "esto es el editar de prueba" } };
-                reset(response.data);
+                const response = await getTransactionById(transactionId);
+                memoizedReset({ amount: response.amount.toString(), merchant: response.merchant });
             } catch {
                 toast.error("Error al cargar los datos de la transacción.");
             } finally {
                 setIsLoading(false);
             }
         })();
-    }, [transactionId, reset]);
+
+    }, [transactionId, memoizedReset]);
 
     const handleSend = async (data: TransactionFormInput) => {
         try {

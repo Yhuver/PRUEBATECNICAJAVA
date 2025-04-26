@@ -2,12 +2,12 @@ import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
 import { HOME_ROUTE, TRANSACTION_ROUTE } from "@/constants/routes.ts";
 import Transaction from "@/components/pages/Transaction.tsx"
 import NotFoundPage from "@/components/pages/NotFound.tsx";
-import Navbar from "@/components/organisms/navbar/navbar.tsx";
 import {Toaster} from "@/components/ui/sonner.tsx";
 import Home from "@/components/pages/Home.tsx";
 import './App.css'
 import {useAuthContext} from "@/contexts/AuthContext.tsx";
 import {JSX} from "react";
+import Navbar from "@/components/organisms/navbar/Navbar.tsx";
 
 function App() {
     return (

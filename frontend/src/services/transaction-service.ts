@@ -59,3 +59,15 @@ export const deleteTransaction = async ( id : number): Promise<void> => {
         throw  "Ha ocurrido un error";
     }
 }
+
+export const getTransactionById = async (id : number): Promise<TransactionResponse> => {
+    try {
+        const response = await api.get(`${DELETE_TRANSACTION_URL}/${id}`);
+        return response.data;
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            throw error.response?.data || "Ha ocurrido al obtener la transacción. Intente más tarde.";
+        }
+        throw  "Ha ocurrido un error";
+    }
+}
