@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/transaction")
@@ -35,6 +36,20 @@ public class TransactionController {
                 responseDtos,
                 HttpStatus.OK
         );
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<TransactionResponseDto> getById(@PathVariable int id) {
+        Optional<Transaction> transactionOptional = useCase.getById(id);
+
+        if (transactionOptional.isPresent()) {
+            Transaction transaction = transactionOptional.get();
+            TransactionResponseDto responseDto = mapper.toResponseDto(transaction);
+
+            return ResponseEntity.ok(responseDto);
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PostMapping

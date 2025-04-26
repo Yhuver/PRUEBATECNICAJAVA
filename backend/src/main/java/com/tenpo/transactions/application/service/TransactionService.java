@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TransactionService implements TransactionUseCase {
@@ -33,6 +34,13 @@ public class TransactionService implements TransactionUseCase {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Account account = accountRepositoryPort.findByEmail(username);
         return transactionRepositoryPort.findAllByAccount(account);
+    }
+
+    @Override
+    public Optional<Transaction> getById(int id) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Account account = accountRepositoryPort.findByEmail(username);
+        return transactionRepositoryPort.findByIdAndAccount(id,account);
     }
 
     @Override
