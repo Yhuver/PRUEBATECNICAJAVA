@@ -13,17 +13,17 @@ interface ModalWrapperProps {
     title: string;
     onOpenChange: (open: boolean) => void;
     description?: string;
-    className?: string;
     children: ReactNode;
 }
 
 export default function ModalWrapper(
-    { className, open, onOpenChange, title, description, children }: ModalWrapperProps
+    {  open, onOpenChange, title, description, children }: ModalWrapperProps
 ) {
+    //
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogOverlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" />
-            <DialogContent className={`sm:max-w-md z-50 ${className} bg-black`}>
+            <DialogOverlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[1000]" />
+            <DialogContent className={`sm:max-w-md bg-black z-[1001]`}>
                 <DialogHeader className="flex items-center justify-between space-y-4">
                     <DialogTitle className="text-2xl">{title}</DialogTitle>
                     <DialogDescription>{description}</DialogDescription>

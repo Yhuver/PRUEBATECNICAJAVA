@@ -8,15 +8,17 @@ import ModalWrapper from "@/components/templates/ModalWrapper.tsx";
 
 
 interface TransactionEditModalProps {
+    row?: Row<TransactionResponse>;
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    row: Row<TransactionResponse>;
     refetchTable: () => void;
 }
 
 export default function EditTransactionModal({ open, onOpenChange, row, refetchTable } : TransactionEditModalProps) {
 
     const navigate = useNavigate();
+
+    if (!row) return null;
 
     const onSuccess = () => {
         toast.success("Transacción editada correctamente.")
@@ -35,8 +37,7 @@ export default function EditTransactionModal({ open, onOpenChange, row, refetchT
         <ModalWrapper
             open={open}
             onOpenChange={onOpenChange}
-            title="Registrarse"
-            description="Crea una nueva cuenta para comenzar"
+            title={"Editar transaction"}
         >
             <EditTransactionForm
                 transactionId={row.original.id}

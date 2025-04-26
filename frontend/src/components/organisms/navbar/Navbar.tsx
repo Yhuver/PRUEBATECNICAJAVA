@@ -26,7 +26,7 @@ export default function Navbar() {
     };
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b border-zinc-800 bg-black">
+        <header className="sticky top-0 z-40 w-full border-b border-zinc-800 bg-black">
             <div className="container flex h-16 items-center justify-between">
 
                 <div className="flex items-center gap-6">

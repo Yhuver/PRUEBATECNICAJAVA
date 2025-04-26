@@ -8,7 +8,7 @@ export function useTransactions() {
 
     const [loading, setLoading] = useState(true);
 
-    const fetchData = async () => {
+    const refetchTable = async () => {
         try {
             setLoading(true);
             const result = await getTransactions();
@@ -21,9 +21,9 @@ export function useTransactions() {
     };
 
     useEffect(() => {
-        fetchData()
+        refetchTable()
             .catch((error) => console.error("Error al obtener las transacciones:", error));
     }, []);
 
-    return { data, loading, fetchData };
+    return { data, loading, refetchTable };
 }

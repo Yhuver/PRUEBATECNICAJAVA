@@ -9,7 +9,7 @@ import {
 } from "@/interfaces/auth-interface.ts";
 import {
     CHECK_URL,
-    LOGOUT_URL, REFRESH_URL,
+    LOGOUT_URL,
     SIGNING_URL,
     SIGNUP_URL
 } from "@/constants/endpoints.ts";
@@ -31,7 +31,6 @@ export const login = async (credentials: LoginRequest): Promise<LoginResponse> =
 export const register = async (credentials: RegisterRequest): Promise<RegisterResponse> => {
     try {
         const response = await api.post(SIGNUP_URL, credentials);
-        localStorage.setItem("hasSession", "true");
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError) {
@@ -42,7 +41,6 @@ export const register = async (credentials: RegisterRequest): Promise<RegisterRe
 }
 
 export const logout = async (): Promise<void> => {
-    localStorage.removeItem("hasSession");
     try {
         const response = await api.post(LOGOUT_URL);
         return response.data;
@@ -65,16 +63,5 @@ export const checkSession = async (): Promise<boolean> => {
     }
 };
 
-export const refreshSession = async (): Promise<void> => {
-    try {
-        const response = await api.post(REFRESH_URL);
-        return response.data;
-    }
-    catch (error){
-        if (error instanceof  AxiosError){
-            throw error.response?.data || "Ha ocurrido un error al refrescar la sesión la sesión."
-        }
-    }
-}
 
 
