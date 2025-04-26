@@ -2,7 +2,7 @@ import {TRANSACTION_ROUTE} from "@/constants/routes.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {useNavigate} from "react-router";
 import {Banknote} from "lucide-react";
-import {useTransactionForm} from "@/hooks/useTransactionForm.tsx";
+import {useTransactionForm} from "@/hooks/useTransactionForm.ts";
 import InputField from "@/components/molecules/InputField.tsx";
 
 

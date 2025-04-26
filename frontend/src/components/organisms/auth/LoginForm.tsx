@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button.tsx";
-import { useLoginForm } from "@/hooks/useLoginForm.tsx";
+import { useLoginForm } from "@/hooks/useLoginForm.ts";
 import InputField from "@/components/molecules/InputField.tsx";
 
 interface LoginFormProps {

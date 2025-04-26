@@ -1,5 +1,5 @@
 import { Table } from "@/components/ui/table.tsx"
-import { useDataTable } from "@/hooks/useDataTable.tsx"
+import { useDataTable } from "@/hooks/useDataTable.ts"
 import { closestCenter, DndContext } from "@dnd-kit/core"
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
 import { ColumnDef } from "@tanstack/react-table"

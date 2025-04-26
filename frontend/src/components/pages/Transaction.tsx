@@ -3,7 +3,7 @@ import { AddTransactionButton } from "@/components/molecules/AddTransactionButto
 import AddTransactionModal from "@/components/organisms/transaction/AddTransactionModal.tsx";
 import DataTable from "@/components/organisms/datatable/DataTable.tsx";
 import {getTransactionColumns} from "@/components/organisms/datatable/TransactionColumns.tsx";
-import {useTransactions} from "@/hooks/useTransactions.tsx";
+import {useTransactions} from "@/hooks/useTransactions.ts";
 
 export default function Transaction() {
 
