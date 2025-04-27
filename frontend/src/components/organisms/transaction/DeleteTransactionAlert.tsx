@@ -1,8 +1,6 @@
-import { showToast } from "@/components/atoms/toastHandler";
-import { TransactionResponse } from "@/interfaces/transaction-interface";
-import { deleteTransaction } from "@/services/transaction-service";
-import { Row } from "@tanstack/react-table";
-import { useState } from "react";
+import {TransactionResponse} from "@/interfaces/transaction-interface";
+import {Row} from "@tanstack/react-table";
+import {useState} from "react";
 import {
     AlertDialog, AlertDialogAction,
     AlertDialogCancel,
@@ -14,22 +12,25 @@ import {
 import {TrashIcon} from "lucide-react";
 import {Button} from "@/components/ui/button.tsx";
 import {AlertDialogOverlay} from "@radix-ui/react-alert-dialog";
+import {useTransactionContext} from "@/contexts/TransactionContext.tsx";
+import {showToast} from "@/components/atoms/toastHandler.ts";
 
 interface DeleteTransactionAlertProps {
     row: Row<TransactionResponse>;
 }
 
-export default function DeleteTransactionAlert({ row }: DeleteTransactionAlertProps) {
+export default function DeleteTransactionAlert({row}: DeleteTransactionAlertProps) {
 
     const [loading, setLoading] = useState(false);
+    const {deleteTransaction} = useTransactionContext();
 
     const handleDelete = async () => {
+        setLoading(true);
         try {
-            setLoading(true);
-            await deleteTransaction(row.original.id);
-            showToast({ type: 'success', message: "Transacción eliminada" });
+            deleteTransaction(row.original.id);
+            showToast({type: "success", message: "Transacción eliminada."});
         } catch {
-            showToast({ type: "error", message: "Hubo un error al eliminar" });
+            showToast({type: "error", message: "Hubo un error al eliminar la transacción."});
         } finally {
             setLoading(false);
         }
@@ -47,16 +48,17 @@ export default function DeleteTransactionAlert({ row }: DeleteTransactionAlertPr
                     {loading ? (
                         <span className="animate-spin">⏳</span>
                     ) : (
-                        <TrashIcon className="text-white" />
+                        <TrashIcon className="text-white"/>
                     )}
                 </Button>
             </AlertDialogTrigger>
-            <AlertDialogOverlay className="inset-0 bg-black/50 backdrop-blur-sm z-[1001]" />
+            <AlertDialogOverlay className="inset-0 bg-black/50 backdrop-blur-sm z-[1001]"/>
             <AlertDialogContent className="bg-black">
                 <AlertDialogHeader>
                     <AlertDialogTitle>¿Estás seguro de que quieres eliminar?</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Esta acción no se puede deshacer. Esto eliminará permanentemente la transacción y se perderán los datos asociados.
+                        Esta acción no se puede deshacer. Esto eliminará permanentemente la transacción y se perderán
+                        los datos asociados.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

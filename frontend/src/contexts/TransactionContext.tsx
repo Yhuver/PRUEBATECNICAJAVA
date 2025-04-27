@@ -1,15 +1,17 @@
-import { createContext, useContext, useState, ReactNode, useEffect, useRef, Dispatch, SetStateAction } from 'react';
-import { TransactionRequest, TransactionResponse, TransactionUpdateRequest } from '@/interfaces/transaction-interface.ts';
+import {createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState} from 'react';
+import {TransactionRequest, TransactionResponse, TransactionUpdateRequest} from '@/interfaces/transaction-interface.ts';
 import {
+    createTransaction,
+    getTransactionById,
     getTransactions,
-    addTransaction as createTransaction,
-    getTransactionById
+    updateTransaction,
+    deleteTransaction as removeTransaction
 } from '@/services/transaction-service.ts';
 
 interface TransactionContextProps {
     transactions: TransactionResponse[];
-    addTransaction: (transaction: TransactionRequest) => void;
-    editTransaction: (id: number, updatedTransaction: TransactionUpdateRequest) => void;
+    addTransaction: (newTransaction: TransactionRequest) => Promise<void>;
+    editTransaction: (id: number, updatedTransaction: TransactionUpdateRequest) => Promise<void>;
     deleteTransaction: (id: number) => void;
     isEditOpen: boolean;
     isAddOpen: boolean;
@@ -28,47 +30,45 @@ export const TransactionProvider = ({ children }: { children: ReactNode }) => {
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState<TransactionResponse | null>(null);
-    const isMounted = useRef(false);
 
-    useEffect(() => {
-        isMounted.current = true;
-        return () => {
-            isMounted.current = false;
-        };
-    }, []);
+    const fetchTransactions = async () => {
+        const transactions = await getTransactions();
+        setTransactions(transactions);
+    };
 
     useEffect(() => {
         (async () => {
             try {
-                const data = await getTransactions();
-                if (isMounted.current) {
-                    setTransactions(data);
-                }
+                await fetchTransactions();
             } catch (error) {
-                console.error('Error al cargar las transacciones', error);
+                console.error('Error fetching transactions:', error);
             }
         })();
-    }, []);
+    }, [transactions]);
 
-    const addTransaction = async (transaction: TransactionRequest) => {
-        try {
-            const newTransaction = await createTransaction(transaction);
-            setTransactions(prev => [...prev, newTransaction]);
-        } catch (error) {
-            console.error('Error al agregar la transacción', error);
-        }
+    const addTransaction = async (transaction: TransactionRequest): Promise<void> => {
+        const newTransaction = await createTransaction(transaction);
+        setTransactions(prev => [...prev, newTransaction]);
     };
 
-    const editTransaction = (id: number, updatedTransaction: TransactionUpdateRequest) => {
+    const editTransaction = async (id: number, updatedTransaction: TransactionUpdateRequest): Promise<void> => {
+        const updatedTrans = await updateTransaction(id, updatedTransaction);
         setTransactions(prev =>
             prev.map(transaction =>
-                transaction.id === id ? { ...transaction, ...updatedTransaction } : transaction
+                    transaction.id === id ? { ...transaction, ...updatedTrans } : transaction
             )
         );
     };
 
-    const deleteTransaction = (id: number) => {
-        setTransactions(prev => prev.filter(transaction => transaction.id !== id));
+    const deleteTransaction = async (id: number): Promise<void> => {
+        try {
+            await removeTransaction(id);
+            console.log(id)
+            setTransactions(prev => prev.filter(transaction => transaction.id !== id));
+            closeEditModal();
+        } catch (error) {
+            console.error('Error deleting transaction:', error);
+        }
     };
 
     const openEditModal = async (id: number) => {

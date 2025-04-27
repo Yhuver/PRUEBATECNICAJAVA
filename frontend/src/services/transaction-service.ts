@@ -12,7 +12,7 @@ import {
 } from "@/constants/endpoints.ts";
 
 
-export const addTransaction = async ( data : TransactionRequest) : Promise<TransactionResponse>  => {
+export const createTransaction = async ( data : TransactionRequest) : Promise<TransactionResponse>  => {
     try {
         const response = await api.post(ADD_TRANSACTION_URL, data);
         return response.data;

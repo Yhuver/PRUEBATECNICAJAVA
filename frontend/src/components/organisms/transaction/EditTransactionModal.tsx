@@ -1,10 +1,9 @@
-import { useTransactionContext } from "@/contexts/TransactionContext.tsx";
-import { TransactionUpdateRequest } from "@/interfaces/transaction-interface.ts";
-import { useNavigate } from "react-router";
 import EditTransactionForm from "@/components/organisms/transaction/EditTransactionForm.tsx";
-import ModalWrapper from "@/components/templates/ModalWrapper.tsx";
 import { showToast, handleError } from "@/components/atoms/toastHandler.ts";
+import { useTransactionContext } from "@/contexts/TransactionContext.tsx";
+import ModalWrapper from "@/components/templates/ModalWrapper.tsx";
 import {TRANSACTION_ROUTE} from "@/constants/routes.ts";
+import { useNavigate } from "react-router";
 
 interface TransactionEditModalProps {
     open: boolean;
@@ -13,13 +12,12 @@ interface TransactionEditModalProps {
 
 export default function EditTransactionModal({ open, onOpenChange }: TransactionEditModalProps) {
     const navigate = useNavigate();
-    const { editTransaction, selectedTransaction,  } = useTransactionContext();
+    const { selectedTransaction,  } = useTransactionContext();
 
     if (!selectedTransaction) return null;
 
-    const onSuccess = (updatedTransaction: TransactionUpdateRequest) => {
+    const onSuccess = () => {
         showToast({ type: "success", message: "Transacción editada correctamente" });
-        editTransaction(selectedTransaction.id, updatedTransaction);
         onOpenChange(false);
         navigate(TRANSACTION_ROUTE);
     };

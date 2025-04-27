@@ -3,8 +3,6 @@ import { TRANSACTION_ROUTE } from "@/constants/routes.ts";
 import { useNavigate } from "react-router";
 import ModalWrapper from "@/components/templates/ModalWrapper.tsx";
 import { handleError, showToast } from "@/components/atoms/toastHandler.ts";
-import { useTransactionContext } from "@/contexts/TransactionContext.tsx";
-import {TransactionRequest} from "@/interfaces/transaction-interface.ts";
 
 interface TransactionModalProps {
     open: boolean;
@@ -14,11 +12,9 @@ interface TransactionModalProps {
 export default function AddTransactionModal({ open, onOpenChange }: TransactionModalProps) {
 
     const navigate = useNavigate();
-    const { addTransaction } = useTransactionContext();
 
-    const onSuccess = (newTransaction : TransactionRequest) => {
+    const onSuccess = () => {
         showToast({ type: "success", message: "Transacción registrada correctamente." });
-        addTransaction(newTransaction);
         onOpenChange(false);
         navigate(TRANSACTION_ROUTE);
     };
