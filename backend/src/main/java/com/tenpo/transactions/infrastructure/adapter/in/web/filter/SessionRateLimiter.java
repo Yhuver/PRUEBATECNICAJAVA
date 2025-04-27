@@ -15,7 +15,7 @@ public class SessionRateLimiter {
 
     private Bucket newBucket(String key) {
         return Bucket.builder()
-                .addLimit(limit-> limit.capacity(50).refillIntervally(15, Duration.ofMinutes(3)))
+                .addLimit(limit-> limit.capacity(50).refillIntervally(50, Duration.ofMinutes(3)))
                 .build();
     }
 }

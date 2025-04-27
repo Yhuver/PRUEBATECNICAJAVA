@@ -15,7 +15,7 @@ public class ActionRateLimiter {
 
         return userEndpointBuckets.computeIfAbsent(key, k -> {
             return Bucket.builder()
-                    .addLimit(limit-> limit.capacity(3).refillGreedy(3, Duration.ofMinutes(1)))
+                    .addLimit(limit-> limit.capacity(3).refillIntervally(3, Duration.ofMinutes(1)))
                     .build();
         });
     }

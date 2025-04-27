@@ -22,9 +22,7 @@ public class RateLimitingFilter implements Filter {
         String ip = req.getRemoteAddr();
         String path = req.getRequestURI();
 
-        String CHECK_SESSION = "/api/check-session";
-
-        logBucketStatus(ip, path);
+        String CHECK_SESSION = "/api/auth/check-session";
 
         if (path.startsWith(CHECK_SESSION)) {
             if (!sessionRateLimiter.resolveBucket(ip).tryConsume(1)) {
@@ -45,12 +43,6 @@ public class RateLimitingFilter implements Filter {
     private void reject(HttpServletResponse res) throws IOException {
         res.setStatus(429);
         res.getWriter().write("Too Many Requests");
-    }
-
-    public void logBucketStatus(String ip, String path) {
-        Bucket bucket = actionRateLimiter.resolveBucket(ip, path);
-        long availableTokens = bucket.getAvailableTokens();
-        System.out.println("Tokens disponibles para " + ip + " en la ruta " + path + ": " + availableTokens);
     }
 
 }
