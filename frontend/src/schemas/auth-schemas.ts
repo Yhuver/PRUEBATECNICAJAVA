@@ -2,6 +2,7 @@ import {z} from "zod";
 
 const REQUIRED_FIELD = "Este campo es requerido."
 const NO_VALID_EMAIL = "Correo electrónico no válido.";
+const PASSWORD_DOESNT_MATCH = "Las contraseñas no coinciden"
 
 export const LoginSchema = z
     .object({
@@ -34,5 +35,5 @@ export const RegisterSchema = z.object({
     }),
 }).refine((data) => data.password === data.confirmPassword, {
     path: ["confirmPassword"],
-    message: "Passwords do not match",
+    message: PASSWORD_DOESNT_MATCH,
 });

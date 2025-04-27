@@ -19,7 +19,6 @@ interface ModalWrapperProps {
 export default function ModalWrapper(
     {  open, onOpenChange, title, description, children }: ModalWrapperProps
 ) {
-    //
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogOverlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[1000]" />

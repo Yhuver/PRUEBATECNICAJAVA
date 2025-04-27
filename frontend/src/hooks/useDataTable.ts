@@ -1,4 +1,4 @@
-import {useId, useState} from "react"
+import {useEffect, useId, useState} from "react"
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -24,12 +24,22 @@ import { arrayMove } from "@dnd-kit/sortable"
 
 type RowWithId = { id: string | number }
 
+
 export function useDataTable<T extends RowWithId>(initialData: T[], columns: ColumnDef<T>[]) {
-    const [data, setData] = useState(() => initialData)
+
+    const [data, setData] = useState<T[]>([]);
+
+    useEffect(() => {
+        if (Array.isArray(initialData) && initialData.length > 0) {
+            setData(initialData);
+        }
+    }, [initialData]);
+
     const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({})
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [sorting, setSorting] = useState<SortingState>([])
+
     const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 10,
@@ -68,7 +78,7 @@ export function useDataTable<T extends RowWithId>(initialData: T[], columns: Col
         getFacetedUniqueValues: getFacetedUniqueValues(),
     })
 
-    const dataIds = data.map(item => item.id)
+    const dataIds = data.map(item => item.id);
 
     function handleDragEnd(event: DragEndEvent) {
         const { active, over } = event

@@ -1,4 +1,4 @@
-import {ColumnDef, Row} from "@tanstack/react-table";
+import {ColumnDef} from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
@@ -7,12 +7,7 @@ import { TableActions } from "@/components/molecules/TableActions.tsx";
 import DragHandle from "@/components/atoms/DragHandle.tsx";
 
 
-interface TransactionColumnsProps {
-    refetchTable: () => void;
-    startEditing: (row: Row<TransactionResponse> ) => void;
-}
-
-export const getTransactionColumns = ( {refetchTable, startEditing }: TransactionColumnsProps): ColumnDef<TransactionResponse>[] => [
+export const getTransactionColumns = ( ): ColumnDef<TransactionResponse>[] => [
     {
         id: "drag",
         header: () => null,
@@ -68,11 +63,7 @@ export const getTransactionColumns = ( {refetchTable, startEditing }: Transactio
     {
         id: "actions",
         cell: ({ row }) => (
-            <TableActions
-                row={row}
-                refetchTable={refetchTable}
-                startEditing={startEditing}
-            />
+            <TableActions row={row} />
         ),
     },
 ];

@@ -1,31 +1,31 @@
 import AddTransactionForm from "@/components/organisms/transaction/AddTransactionForm.tsx";
-import {TRANSACTION_ROUTE} from "@/constants/routes.ts";
-import {useNavigate} from "react-router";
-import {toast} from "sonner";
+import { TRANSACTION_ROUTE } from "@/constants/routes.ts";
+import { useNavigate } from "react-router";
 import ModalWrapper from "@/components/templates/ModalWrapper.tsx";
+import { handleError, showToast } from "@/components/atoms/toastHandler.ts";
+import { useTransactionContext } from "@/contexts/TransactionContext.tsx";
+import {TransactionRequest} from "@/interfaces/transaction-interface.ts";
 
 interface TransactionModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    refetchTable: () => void;
 }
 
-export default function AddTransactionModal({ open, onOpenChange, refetchTable }: TransactionModalProps) {
+export default function AddTransactionModal({ open, onOpenChange }: TransactionModalProps) {
 
     const navigate = useNavigate();
+    const { addTransaction } = useTransactionContext();
 
-    const onSuccess = () => {
-        toast.success("Transacción registrada correctamente.")
-        onOpenChange(false)
+    const onSuccess = (newTransaction : TransactionRequest) => {
+        showToast({ type: "success", message: "Transacción registrada correctamente." });
+        addTransaction(newTransaction);
+        onOpenChange(false);
         navigate(TRANSACTION_ROUTE);
-        refetchTable();
-    }
+    };
 
-    const onError = () => {
-        toast.error("Ha ocurrido un error", {
-            description: "Por favor intenta más tarde.",
-        })
-    }
+    const onError = (error: unknown) => {
+        handleError(error);
+    };
 
     return (
         <ModalWrapper

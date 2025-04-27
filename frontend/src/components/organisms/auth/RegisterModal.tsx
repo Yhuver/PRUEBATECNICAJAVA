@@ -1,9 +1,9 @@
 import {Button} from "@/components/ui/button.tsx";
-import {toast} from "sonner";
 import {TRANSACTION_ROUTE} from "@/constants/routes.ts";
 import {useNavigate} from "react-router";
 import ModalWrapper from "@/components/templates/ModalWrapper.tsx";
 import RegisterForm from "@/components/organisms/auth/RegisterForm.tsx";
+import {handleError, showToast} from "@/components/atoms/toastHandler";
 
 
 interface RegisterFormProps {
@@ -16,16 +16,15 @@ export default function RegisterModal({open, onOpenChange, setLoginOpen }: Regis
 
     const navigate = useNavigate();
 
+
     const onSuccess = () => {
-        toast.success("Ahora puedes empezar a explorar.");
+        showToast({type: "success", message: "Ahora puedes empezar a explorar."});
         onOpenChange(false);
         navigate(TRANSACTION_ROUTE);
     }
 
-    const onError = () => {
-        toast.error("Ha ocurrido un error", {
-            description: "Por favor intenta más tarde.",
-        })
+    const onError = (error: unknown) => {
+        handleError(error);
     }
 
     return (

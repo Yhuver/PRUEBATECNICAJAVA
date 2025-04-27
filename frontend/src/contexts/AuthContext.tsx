@@ -7,13 +7,14 @@ interface AuthContextType {
     login: (credentials: LoginRequest) => Promise<void>;
     register: (credentials: RegisterRequest) => void;
     logout: () => void;
-    // loading: boolean;
+    loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({children}) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         (async () => {
@@ -22,6 +23,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({children}) => {
                 setIsAuthenticated(isValid);
             } catch {
                 setIsAuthenticated(false);
+            } finally {
+                setLoading(false);
             }
         })();
     }, []);
@@ -46,6 +49,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({children}) => {
         login: handleLogin,
         logout: handleLogout,
         register: handleRegister,
+        loading
     };
 
     return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;

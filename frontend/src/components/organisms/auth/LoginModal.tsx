@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button.tsx";
-import {toast} from "sonner";
 import {useNavigate} from "react-router";
 import {TRANSACTION_ROUTE} from "@/constants/routes.ts";
 import ModalWrapper from "@/components/templates/ModalWrapper.tsx";
 import LoginForm from "@/components/organisms/auth/LoginForm.tsx";
+import {handleError, showToast} from "@/components/atoms/toastHandler";
 
 interface LoginModalProps {
     open: boolean;
@@ -16,13 +16,13 @@ export default function LoginModal({ open, onOpenChange, setRegisterOpen }: Logi
     const navigate = useNavigate();
 
     const onSuccess = () => {
-        toast.success("Bienvenido de nuevo 👋");
-        onOpenChange(false)
-        navigate(TRANSACTION_ROUTE)
+        showToast({ type: 'success', message: "Bienvenido de nuevo 👋"});
+        onOpenChange(false);
+        navigate(TRANSACTION_ROUTE);
     }
 
-    const onError = () => {
-        toast.error("Verifica tus credenciales e intenta nuevamente");
+    const onError = (error: unknown) => {
+        handleError(error);
     }
 
     return (

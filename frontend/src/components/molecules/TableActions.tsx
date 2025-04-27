@@ -1,23 +1,27 @@
+import { Button } from "@/components/ui/button.tsx";
+import { EditIcon } from "lucide-react";
+import { useTransactionContext } from "@/contexts/TransactionContext.tsx"; // Aquí importamos el contexto
 import { Row } from "@tanstack/react-table";
-import {TransactionResponse} from "@/interfaces/transaction-interface.ts";
+import { TransactionResponse } from "@/interfaces/transaction-interface.ts";
 import DeleteTransactionAlert from "@/components/organisms/transaction/DeleteTransactionAlert.tsx";
-import {Button} from "@/components/ui/button.tsx";
-import {EditIcon} from "lucide-react";
-
 
 interface TableActionsProps {
     row: Row<TransactionResponse>;
-    refetchTable: () => void;
-    startEditing: (row: Row<TransactionResponse>) => void;
 }
 
-export function TableActions({ row, refetchTable, startEditing }: TableActionsProps) {
+export function TableActions({ row }: TableActionsProps) {
+    const { openEditModal } = useTransactionContext();
+
+    const startEditing = (row: Row<TransactionResponse>) => {
+        openEditModal(row.original.id);
+    };
+
     return (
-            <div className="space-x-2">
-                <Button onClick={()=> startEditing(row)}>
-                    <EditIcon />
-                </Button>
-                <DeleteTransactionAlert row={row} refetchTable={refetchTable}/>
-            </div>
-    )
+        <div className="space-x-2">
+            <Button onClick={() => startEditing(row)}>
+                <EditIcon />
+            </Button>
+            <DeleteTransactionAlert row={row} />
+        </div>
+    );
 }

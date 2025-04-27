@@ -1,72 +1,62 @@
-import { addTransaction, getTransactionById, updateTransaction } from "@/services/transaction-service";
+import { addTransaction, updateTransaction } from "@/services/transaction-service";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
     AddTransactionSchema,
     AddTransactionWithoutTransformSchema,
 } from "@/schemas/transaction-schema";
-import { TransactionUpdateRequest } from "@/interfaces/transaction-interface";
+import { TransactionUpdateRequest, TransactionResponse } from "@/interfaces/transaction-interface.ts";
+import {useEffect} from "react";
 
 type TransactionFormInput = z.infer<typeof AddTransactionWithoutTransformSchema>;
 type TransactionFormData = z.infer<typeof AddTransactionSchema>;
 
 interface TransactionFormProps {
-    transactionId?: number;
+    transactionData?: TransactionResponse;
     onSuccess?: (transaction: TransactionFormData | TransactionUpdateRequest) => void;
     onError?: (error: string) => void;
-    onOpenChange?: () => void;
 }
 
-export function useTransactionForm({ transactionId, onSuccess, onError, onOpenChange }: TransactionFormProps = {}) {
-    const [isLoading, setIsLoading] = useState(!!transactionId);
-    const isEditMode = !!transactionId;
+export function useTransactionForm({ transactionData, onSuccess, onError }: TransactionFormProps) {
+    const isEditMode = !!transactionData;
 
     const form = useForm<TransactionFormInput>({
         resolver: zodResolver(AddTransactionWithoutTransformSchema),
         defaultValues: {
-            amount: "0",
-            merchant: "",
+            amount: transactionData?.amount.toString() || "0",
+            merchant: transactionData?.merchant || "",
         },
     });
 
     const { reset } = form;
 
-    const memoizedReset = useCallback((values: TransactionFormInput) => {
+    const memoizedReset = (values: TransactionFormInput) => {
         reset(values);
-    }, [reset]);
+    };
 
     useEffect(() => {
-        if (!transactionId) return;
-        (async () => {
-            try {
-                setIsLoading(true);
-                const response = await getTransactionById(transactionId);
-                memoizedReset({ amount: response.amount.toString(), merchant: response.merchant });
-            } catch {
-                if (onOpenChange) {
-                    onOpenChange();
-                    }
-            }  finally {
-                setIsLoading(false);
-            }
-        })();
-    }, [transactionId, memoizedReset]);
+        if (transactionData) {
+            memoizedReset({
+                amount: transactionData.amount.toString(),
+                merchant: transactionData.merchant,
+            });
+        }
+    }, [transactionData]);
 
     const handleSend = async (data: TransactionFormInput) => {
         try {
             const serviceData: TransactionFormData = {
                 amount: Number(data.amount),
-                merchant: data.merchant
+                merchant: data.merchant,
             };
 
-            if (isEditMode && transactionId) {
+            if (isEditMode) {
                 const updateTransactionData: TransactionUpdateRequest = {
                     amount: serviceData.amount,
-                    merchant: serviceData.merchant
+                    merchant: serviceData.merchant,
                 };
-                await updateTransaction(transactionId, updateTransactionData);
+                await updateTransaction(transactionData.id, updateTransactionData);
                 onSuccess?.(updateTransactionData);
             } else {
                 await addTransaction(serviceData);
@@ -79,9 +69,8 @@ export function useTransactionForm({ transactionId, onSuccess, onError, onOpenCh
     };
 
     return {
-        isLoading,
         isEditMode,
-        ...form,
         handleSend: form.handleSubmit(handleSend),
+        ...form,
     };
 }

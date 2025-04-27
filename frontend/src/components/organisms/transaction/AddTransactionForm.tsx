@@ -4,10 +4,11 @@ import {useNavigate} from "react-router";
 import {Banknote} from "lucide-react";
 import {useTransactionForm} from "@/hooks/useTransactionForm.ts";
 import InputField from "@/components/molecules/InputField.tsx";
+import {TransactionRequest} from "@/interfaces/transaction-interface.ts";
 
 
 interface TransactionFormProps {
-    onSuccess: () => void;
+    onSuccess: (newTransaction: TransactionRequest) => void;
     onError?: (msg: string) => void;
 }
 

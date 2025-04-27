@@ -10,7 +10,6 @@ import TablePagination from "@/components/molecules/TablePagination.tsx";
 type RowWithId = { id: number }
 
 export default function DataTable<T extends RowWithId>({ columns, data: initialData }: { columns: ColumnDef<T>[]; data: T[] }) {
-
     const {
         table,
         dataIds,
@@ -19,7 +18,7 @@ export default function DataTable<T extends RowWithId>({ columns, data: initialD
         handleDragEnd,
         selectedCount,
         totalCount,
-    } = useDataTable(initialData, columns)
+    } = useDataTable(initialData, columns);
 
     const pageSizes = [10, 20, 30, 40, 50];
 

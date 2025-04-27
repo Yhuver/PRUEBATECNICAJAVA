@@ -1,49 +1,39 @@
-import {TransactionResponse} from "@/interfaces/transaction-interface.ts";
-import {Row} from "@tanstack/react-table";
-import {useNavigate} from "react-router";
-import {toast} from "sonner";
-import {TRANSACTION_ROUTE} from "@/constants/routes.ts";
+import { useTransactionContext } from "@/contexts/TransactionContext.tsx";
+import { TransactionUpdateRequest } from "@/interfaces/transaction-interface.ts";
+import { useNavigate } from "react-router";
 import EditTransactionForm from "@/components/organisms/transaction/EditTransactionForm.tsx";
 import ModalWrapper from "@/components/templates/ModalWrapper.tsx";
-
+import { showToast, handleError } from "@/components/atoms/toastHandler.ts";
+import {TRANSACTION_ROUTE} from "@/constants/routes.ts";
 
 interface TransactionEditModalProps {
-    row?: Row<TransactionResponse>;
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    refetchTable: () => void;
 }
 
-export default function EditTransactionModal({ open, onOpenChange, row, refetchTable } : TransactionEditModalProps) {
-
+export default function EditTransactionModal({ open, onOpenChange }: TransactionEditModalProps) {
     const navigate = useNavigate();
+    const { editTransaction, selectedTransaction,  } = useTransactionContext();
 
-    if (!row) return null;
+    if (!selectedTransaction) return null;
 
-    const onSuccess = () => {
-        toast.success("Transacción editada correctamente.")
-        onOpenChange(false)
+    const onSuccess = (updatedTransaction: TransactionUpdateRequest) => {
+        showToast({ type: "success", message: "Transacción editada correctamente" });
+        editTransaction(selectedTransaction.id, updatedTransaction);
+        onOpenChange(false);
         navigate(TRANSACTION_ROUTE);
-        refetchTable();
-    }
+    };
 
-    const onError = () => {
-        toast.error("Ha ocurrido un error", {
-            description: "Por favor intenta más tarde.",
-        })
-    }
+    const onError = (error: unknown) => {
+        handleError(error);
+    };
 
     return (
-        <ModalWrapper
-            open={open}
-            onOpenChange={onOpenChange}
-            title={"Editar transaction"}
-        >
+        <ModalWrapper open={open} onOpenChange={onOpenChange} title={"Editar transacción"}>
             <EditTransactionForm
-                transactionId={row.original.id}
                 onError={onError}
                 onSuccess={onSuccess}
             />
         </ModalWrapper>
-    )
+    );
 }
