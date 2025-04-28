@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Getter
@@ -21,8 +21,8 @@ public class TransactionEntity {
     private int amount;
     private String merchant;
     @Column(updatable = false)
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
     private AccountEntity account;

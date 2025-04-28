@@ -11,7 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,7 +53,7 @@ public class TransactionService implements TransactionUseCase {
         transaction.setAccount(account);
 
         if (transaction.getCreatedAt() == null){
-            transaction.setCreatedAt(LocalDateTime.now());
+            transaction.setCreatedAt(Instant.now());
         }
 
         return transactionRepositoryPort.save(transaction);
@@ -74,7 +74,7 @@ public class TransactionService implements TransactionUseCase {
 
         existing.setAmount(transaction.getAmount());
         existing.setMerchant(transaction.getMerchant());
-        existing.setUpdatedAt(LocalDateTime.now());
+        existing.setUpdatedAt(Instant.now());
 
         return transactionRepositoryPort.save(existing);
     }

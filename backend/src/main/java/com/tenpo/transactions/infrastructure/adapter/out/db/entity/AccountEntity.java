@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Entity
@@ -27,6 +27,6 @@ public class AccountEntity {
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
     private List<TransactionEntity> transactions;
 
-    private LocalDateTime createdAt;
+    private Instant createdAt;
     private boolean active;
 }
