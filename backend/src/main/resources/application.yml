@@ -6,8 +6,8 @@ spring:
     name: transactions
   datasource:
     url: ${DB_URL}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
