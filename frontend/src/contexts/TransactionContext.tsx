@@ -44,7 +44,7 @@ export const TransactionProvider = ({ children }: { children: ReactNode }) => {
                 console.error('Error fetching transactions:', error);
             }
         })();
-    }, [transactions]);
+    }, []);
 
     const addTransaction = async (transaction: TransactionRequest): Promise<void> => {
         const newTransaction = await createTransaction(transaction);

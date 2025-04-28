@@ -2,6 +2,7 @@ import {ColumnDef} from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
+import { toZonedTime } from "date-fns-tz";
 import { TransactionResponse } from "@/interfaces/transaction-interface.ts";
 import { TableActions } from "@/components/molecules/TableActions.tsx";
 import DragHandle from "@/components/atoms/DragHandle.tsx";
@@ -44,8 +45,10 @@ export const getTransactionColumns = ( ): ColumnDef<TransactionResponse>[] => [
         accessorKey: "createdAt",
         header: "Fecha de la transacción",
         cell: (info) => {
-            const createdAt = new Date(info.getValue() as string);
-            return formatDistanceToNow(createdAt, { addSuffix: true, locale: es });
+            const dateUTC = new Date(info.getValue() as string);
+            const clientTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const localDate = toZonedTime(dateUTC, clientTimeZone);
+            return formatDistanceToNow(localDate, { addSuffix: true, locale: es });
         },
     },
     {
@@ -56,8 +59,10 @@ export const getTransactionColumns = ( ): ColumnDef<TransactionResponse>[] => [
             const formatted = new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD",
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
             }).format(amount);
-            return <div className="font-medium">{formatted + " COP"}</div>;
+            return <div className="font-medium">{formatted}</div>;
         },
     },
     {
