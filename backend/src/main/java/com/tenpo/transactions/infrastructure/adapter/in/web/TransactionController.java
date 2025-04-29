@@ -25,6 +25,7 @@ public class TransactionController {
         this.mapper = mapper;
     }
 
+
     @GetMapping
     public ResponseEntity<List<TransactionResponseDto>> getAllTransaction() {
         List<Transaction> transactions = useCase.findAll();
@@ -38,6 +39,7 @@ public class TransactionController {
         );
     }
 
+
     @GetMapping("{id}")
     public ResponseEntity<TransactionResponseDto> getById(@PathVariable int id) {
         Optional<Transaction> transactionOptional = useCase.getById(id);
@@ -45,12 +47,12 @@ public class TransactionController {
         if (transactionOptional.isPresent()) {
             Transaction transaction = transactionOptional.get();
             TransactionResponseDto responseDto = mapper.toResponseDto(transaction);
-
             return ResponseEntity.ok(responseDto);
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
+
 
     @PostMapping
     public ResponseEntity<TransactionResponseDto> createTransaction (
@@ -60,6 +62,7 @@ public class TransactionController {
         return new ResponseEntity<>(mapper.toResponseDto(createdTransaction), HttpStatus.CREATED);
     }
 
+
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteTransaction(@PathVariable int id) {
         boolean deleted = useCase.delete(id);
@@ -68,6 +71,7 @@ public class TransactionController {
         }
         return ResponseEntity.noContent().build();
     }
+
 
     @PutMapping("{id}")
     public ResponseEntity<TransactionResponseDto> updateTransaction(

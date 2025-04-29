@@ -30,6 +30,12 @@ public class TransactionRepositoryAdapter implements TransactionRepositoryPort {
     }
 
     @Override
+    public int countActiveByAccount(Account account) {
+        AccountEntity accountEntity = accountJpaRepository.findByEmail(account.getEmail());
+        return transactionRepositoryJpa.countByAccountAndActiveTrue(accountEntity);
+    }
+
+    @Override
     public Optional<Transaction> findById(int id) {
         return transactionRepositoryJpa.findById(id).map(transactionMapper::toDomain);
     }

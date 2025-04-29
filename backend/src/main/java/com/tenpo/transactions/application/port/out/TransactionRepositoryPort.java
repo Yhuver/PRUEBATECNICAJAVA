@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TransactionRepositoryPort {
+    int countActiveByAccount(Account account);
     Optional<Transaction> findById(int id);
     Optional<Transaction> findByIdAndAccount(int id, Account account);
     List<Transaction> findAllByAccount(Account account);

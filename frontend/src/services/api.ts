@@ -1,6 +1,6 @@
-import axios, {AxiosError, AxiosRequestConfig} from "axios";
-import {API_URL, REFRESH_URL} from "@/constants/endpoints";
-import {handleError} from "@/components/atoms/toastHandler.ts";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import { API_URL, REFRESH_URL } from "@/constants/endpoints";
+import { handleError } from "@/components/atoms/toastHandler.ts";
 
 export const api = axios.create({
     baseURL: API_URL,
@@ -21,14 +21,29 @@ const processQueue = (token: string | null, error: unknown) => {
     failedQueue = [];
 };
 
+const handleSpecificErrors = (error: AxiosError) => {
+    // Manejo de error 429: demasiadas solicitudes
+    if (error.response?.status === 429) {
+        handleError("Too many requests. Please try again later.");
+        return true; // No hacer nada más, ya mostramos el error
+    }
+
+    // Manejo de error 401: no autorizado
+    if (error.response?.status === 401) {
+        handleError("Unauthorized access. Please log in again.");
+        return true; // No hacer nada más, ya mostramos el error
+    }
+
+    return false; // No es un error que manejemos específicamente
+};
+
 api.interceptors.response.use(
     (response) => response,
     async (error: AxiosError) => {
         const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
 
-        // Manejo de error 429: demasiadas solicitudes
-        if (error.response?.status === 429) {
-            handleError(error);  // Mostrar toast solo una vez
+        // Intentamos manejar errores específicos antes de continuar
+        if (handleSpecificErrors(error)) {
             return Promise.reject(error);
         }
 
@@ -62,7 +77,7 @@ api.interceptors.response.use(
             } catch (err) {
                 // Si ocurre un error en el refresco, procesamos la cola y rechazamos el error
                 processQueue(null, err);
-                handleError(err);  // Aquí solo se muestra un toast de error si la renovación falla
+                handleError("Failed to refresh token. Please log in again.");
                 return Promise.reject(err);
             } finally {
                 isRefreshing = false; // Terminamos el proceso de refresco
@@ -70,8 +85,7 @@ api.interceptors.response.use(
         }
 
         // Si no es un error 401 ni 429, mostramos el error genérico
-        handleError(error);
+        handleError("An unexpected error occurred. Please try again later.");
         return Promise.reject(error);
     }
 );
-

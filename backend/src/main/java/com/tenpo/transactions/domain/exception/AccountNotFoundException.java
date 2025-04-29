@@ -1,10 +1,13 @@
 package com.tenpo.transactions.domain.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
+public class AccountNotFoundException extends RuntimeException {
+    private static final String ERROR_CODE = "ACCOUNT_NOT_FOUND";
 
-public class AccountNotFoundException extends ResponseStatusException {
     public AccountNotFoundException(String username) {
-        super(HttpStatus.NOT_FOUND, "Account not found for user: " + username);
+        super(ERROR_CODE);
+    }
+
+    public String getErrorCode() {
+        return ERROR_CODE;
     }
 }

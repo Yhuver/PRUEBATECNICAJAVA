@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TransactionJpaRepository extends JpaRepository<TransactionEntity, Integer> {
+    int countByAccountAndActiveTrue(AccountEntity account);
     List<TransactionEntity> findAllByAccountAndActiveTrue(AccountEntity account);
     Optional<TransactionEntity> findByIdAndAccountAndActiveTrue(int id, AccountEntity account);
 }
