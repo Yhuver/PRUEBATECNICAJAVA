@@ -4,6 +4,7 @@ import DataTable from "@/components/organisms/datatable/DataTable.tsx";
 import { AddTransactionButton } from "@/components/molecules/AddTransactionButton.tsx";
 import AddTransactionModal from "../organisms/transaction/AddTransactionModal";
 import EditTransactionModal from "../organisms/transaction/EditTransactionModal";
+import {ErrorAlert } from "@/components/atoms/ErrorState.tsx";
 
 export default function Transaction() {
 
@@ -14,19 +15,25 @@ export default function Transaction() {
         closeEditModal,
         openAddModal,
         closeAddModal,
+        fetchTransactions,
+        isFetchError
     } = useTransactionContext();
 
     const columns = getTransactionColumns();
 
+    console.log(isFetchError)
     return (
         <div className="space-y-8 rounded-md py-6">
             <div className="flex items-center justify-end px-4 lg:px-6">
                 <AddTransactionButton onClick={openAddModal} />
             </div>
-            <DataTable
-                columns={columns}
-                data={transactions}
-            />
+            {
+                isFetchError ? (<ErrorAlert onRetry={fetchTransactions}/>) :
+                    <DataTable
+                        columns={columns}
+                        data={transactions}
+                    />
+            }
             <AddTransactionModal
                 open={isAddOpen}
                 onOpenChange={closeAddModal}

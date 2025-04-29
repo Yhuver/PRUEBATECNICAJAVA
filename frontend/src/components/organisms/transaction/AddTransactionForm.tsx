@@ -38,8 +38,8 @@ export default function AddTransactionForm({ onSuccess, onError }: TransactionFo
                />
                <InputField
                    id="merchant"
-                   label="Motivo de la transacción"
-                   placeholder="Motivo de la transacción..."
+                   label="Giro o comercio"
+                   placeholder="Escribe acá..."
                    isTextArea
                    {...register("merchant")}
                    error={errors.merchant?.message}

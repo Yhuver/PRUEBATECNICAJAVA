@@ -21,6 +21,8 @@ interface TransactionContextProps {
     closeEditModal: () => void;
     openAddModal: () => void;
     closeAddModal: () => void;
+    fetchTransactions: () => Promise<void>;
+    isFetchError: boolean;
 }
 
 const TransactionContext = createContext<TransactionContextProps | undefined>(undefined);
@@ -30,10 +32,17 @@ export const TransactionProvider = ({ children }: { children: ReactNode }) => {
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState<TransactionResponse | null>(null);
+    const [isFetchError, setIsFetchError] = useState(false);
 
     const fetchTransactions = async () => {
-        const transactions = await getTransactions();
-        setTransactions(transactions);
+        try {
+            const transactions = await getTransactions();
+            setTransactions(transactions);
+            setIsFetchError(false);
+        } catch (error) {
+            console.error('Error fetching transactions:', error);
+            setIsFetchError(true);
+        }
     };
 
     useEffect(() => {
@@ -55,7 +64,7 @@ export const TransactionProvider = ({ children }: { children: ReactNode }) => {
         const updatedTrans = await updateTransaction(id, updatedTransaction);
         setTransactions(prev =>
             prev.map(transaction =>
-                    transaction.id === id ? { ...transaction, ...updatedTrans } : transaction
+                transaction.id === id ? { ...transaction, ...updatedTrans } : transaction
             )
         );
     };
@@ -106,7 +115,9 @@ export const TransactionProvider = ({ children }: { children: ReactNode }) => {
                 closeEditModal,
                 openAddModal,
                 closeAddModal,
-                setSelectedTransaction
+                setSelectedTransaction,
+                fetchTransactions,
+                isFetchError,
             }}
         >
             {children}
