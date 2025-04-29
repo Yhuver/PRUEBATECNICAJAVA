@@ -1,54 +1,49 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Prueba técnica transacciones [Frontend]
 
-Currently, two official plugins are available:
+Este es un proyecto de prueba técnica que permite gestionar transacciones. La aplicación incluye un CRUD completo para crear, leer, actualizar y eliminar transacciones. Además, muestra una tabla interactiva para visualizar las transacciones, con opciones de paginación y filtrado.
+El proyecto está estructurado siguiendo el enfoque de Atomic Design, lo que permite crear componentes modulares y reutilizables, organizados de acuerdo con su nivel de complejidad (átomos, moléculas, organismos).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+## Estructura del Proyecto
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```
+├── assets/                      # Archivos estáticos como íconos y imágenes
+│   └── favicon.svg
+├── components/                  # Componentes reutilizables organizados por tipo
+│   ├── atoms/                   # Componentes atómicos, como botones o inputs
+│   ├── molecules/               # Componentes intermedios, como formularios o tablas
+│   ├── organisms/               # Componentes más complejos que combinan los anteriores
+│   ├── pages/                   # Páginas de la aplicación
+│   ├── templates/               # Plantillas reutilizables
+│   └── ui/                      # Componentes de UI como diálogos, botones, tablas
+├── constants/                   # Constantes, como rutas o mensajes
+├── contexts/                    # Contextos para manejo de estados globales
+├── hooks/                       # Hooks personalizados
+├── interfaces/                  # Interfaces de TypeScript para tipado fuerte
+├── lib/                         # Funciones utilitarias
+├── providers/                   # Proveedores de contexto, como el tema
+├── schemas/                     # Esquemas de validación de datos
+├── services/                    # Lógica de servicios, como llamadas a APIs
+├── App.css                      # Estilos globales
+├── App.tsx                      # Componente principal de la aplicación
+├── index.css                    # Estilos globales adicionales
+├── main.tsx                     # Punto de entrada de la aplicación
+├── vite-env.d.ts                # Tipado de variables de entorno de Vite
+├── package.json                 # Dependencias del proyecto
+├── vite.config.ts               # Configuración de Vite
+└── .gitignore                   # Archivos ignorados por Git
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Tecnologías
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+- **Vite**: Bundler y servidor de desarrollo rápido.
+- **React**: Librería para crear interfaces de usuario.
+- **React Hook Form**: Librería para crear y gestionar formularios de manera eficiente.
+- **Zod**: Librería para validaciones de formularios y datos.
+- **React Router**: Para gestionar la navegación entre páginas en la aplicación.
+- **ShadCN UI**: Conjunto de componentes reutilizables y accesibles para construir interfaces.
+- **TailwindCSS**: Framework CSS basado en utilidades para un diseño rápido y personalizable.
+

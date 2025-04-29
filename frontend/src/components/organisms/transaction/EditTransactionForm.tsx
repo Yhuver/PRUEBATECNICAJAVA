@@ -42,7 +42,7 @@ export default function EditTransactionForm({ onError, onSuccess, loadError }: T
                     min={0}
                     {...register("amount")}
                     error={errors.amount?.message}
-                    defaultValue={selectedTransaction?.amount || ""}  // Llenamos con el valor actual
+                    defaultValue={selectedTransaction?.amount || ""}
                 />
                 <InputField
                     id="merchant"
@@ -51,7 +51,7 @@ export default function EditTransactionForm({ onError, onSuccess, loadError }: T
                     isTextArea
                     {...register("merchant")}
                     error={errors.merchant?.message}
-                    defaultValue={selectedTransaction?.merchant || ""}  // Llenamos con el valor actual
+                    defaultValue={selectedTransaction?.merchant || ""}
                 />
             </div>
 

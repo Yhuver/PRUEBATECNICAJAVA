@@ -72,7 +72,6 @@ export const TransactionProvider = ({ children }: { children: ReactNode }) => {
     const deleteTransaction = async (id: number): Promise<void> => {
         try {
             await removeTransaction(id);
-            console.log(id)
             setTransactions(prev => prev.filter(transaction => transaction.id !== id));
             closeEditModal();
         } catch (error) {

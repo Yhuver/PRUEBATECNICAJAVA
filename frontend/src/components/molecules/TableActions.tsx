@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button.tsx";
 import { EditIcon } from "lucide-react";
-import { useTransactionContext } from "@/contexts/TransactionContext.tsx"; // Aquí importamos el contexto
+import { useTransactionContext } from "@/contexts/TransactionContext.tsx";
 import { Row } from "@tanstack/react-table";
 import { TransactionResponse } from "@/interfaces/transaction-interface.ts";
 import DeleteTransactionAlert from "@/components/organisms/transaction/DeleteTransactionAlert.tsx";

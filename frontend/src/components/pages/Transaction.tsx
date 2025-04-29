@@ -21,7 +21,6 @@ export default function Transaction() {
 
     const columns = getTransactionColumns();
 
-    console.log(isFetchError)
     return (
         <div className="space-y-8 rounded-md py-6">
             <div className="flex items-center justify-end px-4 lg:px-6">
