@@ -1,4 +1,4 @@
-package com.tenpo.transactions.infrastructure.adapter.in.web.exception;
+package com.tenpo.transactions.infrastructure.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

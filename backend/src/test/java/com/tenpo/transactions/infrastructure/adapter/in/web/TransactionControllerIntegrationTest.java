@@ -1,4 +1,4 @@
-package com.tenpo.transactions.infraestructure.adapter.in.web;
+package com.tenpo.transactions.infrastructure.adapter.in.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tenpo.transactions.application.dto.TransactionRequestDto;

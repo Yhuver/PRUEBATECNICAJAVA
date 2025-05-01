@@ -62,3 +62,8 @@ logging:
         security: DEBUG
 cookie:
   secure: false
+
+jwt:
+  secret: KakarotoSSj2Mysecregtfrd233eggtffeeddgkjjhhtdhttebd54ndhdhfhhhshs8877465sbbdd
+  expiration: 900000
+  refreshExpiration: 604800000

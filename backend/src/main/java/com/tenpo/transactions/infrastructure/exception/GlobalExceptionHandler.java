@@ -1,4 +1,4 @@
-package com.tenpo.transactions.infrastructure.adapter.in.web.exception;
+package com.tenpo.transactions.infrastructure.exception;
 
 import com.tenpo.transactions.domain.exception.*;
 import org.springframework.http.HttpStatus;
