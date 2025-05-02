@@ -61,7 +61,7 @@ public class TransactionService implements TransactionUseCase {
 
         int activeCount = transactionRepositoryPort.countActiveByAccount(account);
 
-        if (activeCount >= 200) {
+        if (activeCount >= 100) {
             throw new TransactionLimitExceededException();
         }
         transaction.setActive(true);

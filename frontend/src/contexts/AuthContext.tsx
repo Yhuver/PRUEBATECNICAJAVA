@@ -1,6 +1,8 @@
 import React, {createContext, useState, ReactNode, useEffect} from 'react';
 import {checkSession, login, logout, register} from '@/services/auth-service.ts';
 import {LoginRequest, RegisterRequest} from "@/interfaces/auth-interface.ts";
+import { useLocation } from 'react-router-dom';
+import { HOME_ROUTE } from '@/constants/routes.ts';
 
 interface AuthContextType {
     isAuthenticated: boolean;
@@ -15,9 +17,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({children}) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
+    const location = useLocation();
 
     useEffect(() => {
-        (async () => {
+        const checkUserSession = async () => {
+            // No verificar la sesión si estamos en la página de inicio
+            if (location.pathname === HOME_ROUTE) {
+                setIsAuthenticated(false);
+                setLoading(false);
+                return;
+            }
+
             try {
                 const isValid = await checkSession();
                 setIsAuthenticated(isValid);
@@ -26,8 +36,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({children}) => {
             } finally {
                 setLoading(false);
             }
-        })();
-    }, []);
+        };
+
+        checkUserSession();
+    }, [location.pathname]);
 
     const handleLogin = async (credentials: LoginRequest) => {
         await login(credentials);

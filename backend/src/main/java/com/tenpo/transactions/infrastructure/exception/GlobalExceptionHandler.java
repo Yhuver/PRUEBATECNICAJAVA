@@ -3,6 +3,7 @@ package com.tenpo.transactions.infrastructure.exception;
 import com.tenpo.transactions.domain.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -63,6 +64,18 @@ public class GlobalExceptionHandler {
             InvalidAccessTokenException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Token de acceso no válido");
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCredentials(
+            InvalidAccessTokenException ex) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(Instant.now().toString())
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .errorCode(ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

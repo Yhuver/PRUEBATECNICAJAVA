@@ -26,11 +26,16 @@ export default function EditTransactionModal({ open, onOpenChange }: Transaction
         handleError(error);
     };
 
+    const onCancel = () => {
+        onOpenChange(false);
+    };
+
     return (
         <ModalWrapper open={open} onOpenChange={onOpenChange} title={"Editar transacción"}>
             <EditTransactionForm
                 onError={onError}
                 onSuccess={onSuccess}
+                onCancel={onCancel}
             />
         </ModalWrapper>
     );

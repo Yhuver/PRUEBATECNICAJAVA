@@ -10,9 +10,10 @@ import {useTransactionContext} from "@/contexts/TransactionContext.tsx";
 interface TransactionFormProps {
     onSuccess: () => void;
     onError?: (msg: string) => void;
+    onCancel?: () => void;
 }
 
-export default function AddTransactionForm({ onSuccess, onError }: TransactionFormProps ){
+export default function AddTransactionForm({ onSuccess, onError, onCancel }: TransactionFormProps ){
     const navigate = useNavigate();
 
     const { addTransaction } = useTransactionContext();
@@ -22,6 +23,14 @@ export default function AddTransactionForm({ onSuccess, onError }: TransactionFo
         handleSend,
         formState: { errors, isSubmitting },
     } = useTransactionForm({addTransaction, onSuccess, onError });
+
+    const handleCancel = () => {
+        if (onCancel) {
+            onCancel();
+        } else {
+            navigate(TRANSACTION_ROUTE);
+        }
+    };
 
     return (
        <form onSubmit={handleSend} className="space-y-8">
@@ -54,7 +63,7 @@ export default function AddTransactionForm({ onSuccess, onError }: TransactionFo
                    type="button"
                    variant="outline"
                    className={"flex-1"}
-                   onClick={() => navigate(TRANSACTION_ROUTE)}>
+                   onClick={handleCancel}>
                    Cancelar
                </Button>
            </div>

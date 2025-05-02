@@ -1,5 +1,7 @@
 package com.tenpo.transactions.infrastructure.adapter.in.web.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tenpo.transactions.infrastructure.exception.ErrorResponse;
 import io.github.bucket4j.Bucket;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,26 +14,24 @@ public class RateLimitingFilter implements Filter {
 
     private final SessionRateLimiter sessionRateLimiter = new SessionRateLimiter();
     private final ActionRateLimiter actionRateLimiter = new ActionRateLimiter();
+    
+    private static final String AUTH_PATH_PREFIX = "/api/auth/";
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
         String ip = req.getRemoteAddr();
         String path = req.getRequestURI();
+        String method = req.getMethod();
 
-        String CHECK_SESSION = "/api/auth/check-session";
-
-        if (path.startsWith(CHECK_SESSION)) {
-            if (!sessionRateLimiter.resolveBucket(ip).tryConsume(1)) {
-                reject(res);
-                return;
-            }
+        if (path.startsWith(AUTH_PATH_PREFIX)) {
+            chain.doFilter(request, response);
+            return;
         }
         else {
-            if (!actionRateLimiter.resolveBucket(ip, path).tryConsume(1)) {
+            if (!actionRateLimiter.resolveBucketTransaction(ip, path, method).tryConsume(1)) {
                 reject(res);
                 return;
             }
@@ -44,5 +44,4 @@ public class RateLimitingFilter implements Filter {
         res.setStatus(429);
         res.getWriter().write("Too Many Requests");
     }
-
 }

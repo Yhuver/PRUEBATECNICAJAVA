@@ -1,4 +1,3 @@
-
 export const errorMessages = {
   "TRANSACTION_LIMIT_EXCEEDED": {
     message: "Has alcanzado el límite de transacciones permitidas.",
@@ -27,5 +26,9 @@ export const errorMessages = {
   "INTERNAL_SERVER_ERROR": {
     message: "Error interno del servidor.",
     submessage: "Estamos trabajando para resolver este problema. Por favor, inténtelo más tarde."
+  },
+  "UNAUTHORIZED": {
+    message: "Credenciales incorrectas",
+    submessage: "Por favor verifica tu usuario y contraseña."
   }
 };

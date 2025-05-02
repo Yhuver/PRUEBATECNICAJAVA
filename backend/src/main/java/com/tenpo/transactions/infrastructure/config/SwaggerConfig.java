@@ -18,7 +18,7 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("Tenpo Transactions API")
                         .version("1.0")
-                        .description("API para gestión de transacciones."))
+                        .description("API para gestión de transacciones. Para acceder a los endpoints protegidos, primero debes autenticarte usando /api/auth/signin y usar el token JWT recibido."))
                 .addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME))
                 .components(new io.swagger.v3.oas.models.Components()
                         .addSecuritySchemes(SECURITY_SCHEME_NAME,

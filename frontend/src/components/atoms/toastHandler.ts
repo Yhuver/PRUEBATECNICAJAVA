@@ -29,7 +29,6 @@ export const showToast = ({ type, message, description }: ToastProps) => {
 };
 
 export const handleError = (error: unknown): boolean => {
-
     if (!axios.isAxiosError(error) || !error.response?.data) {
         return false;
     }
@@ -43,7 +42,7 @@ export const handleError = (error: unknown): boolean => {
         return true;
     }
 
-    switch (error.status) {
+    switch (error.response.status) {
         case 429:
             showToast({
                 type: 'info',
@@ -53,6 +52,19 @@ export const handleError = (error: unknown): boolean => {
             break;
 
         case 401:
+            if (error.response.data && typeof error.response.data === 'object') {
+                const unauthorizedErrorData = error.response.data as ApiErrorResponse;
+                if (unauthorizedErrorData.errorCode === 'UNAUTHORIZED') {
+                    showToast({
+                        type: 'error',
+                        message: 'Credenciales incorrectas',
+                        description: 'Por favor verifica tu usuario y contraseña.',
+                    });
+                    return true;
+                }
+            }
+            
+            // Mensaje genérico de no autorizado
             showToast({
                 type: 'error',
                 message: 'No estás autorizado',

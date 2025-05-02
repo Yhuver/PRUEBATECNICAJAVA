@@ -10,25 +10,28 @@ import {JSX} from "react";
 import Navbar from "@/components/organisms/navbar/Navbar.tsx";
 import {TransactionProvider} from "@/contexts/TransactionContext.tsx";
 import {PuffLoader} from "react-spinners";
+import {AuthProvider} from "@/contexts/AuthContext.tsx";
 
 function App() {
 
     return (
         <div className="bg-black">
             <BrowserRouter>
-                <Navbar />
-                <Routes>
-                    <Route path="/" element={<Navigate to={HOME_ROUTE} replace />}/>
-                    <Route path={HOME_ROUTE} element={<Home />} />
-                    <Route path={TRANSACTION_ROUTE} element={
-                        <ProtectedRoute>
-                            <TransactionProvider>
-                                <Transaction />
-                            </TransactionProvider>
-                        </ProtectedRoute>
-                    } />
-                    <Route path="*" element={<NotFoundPage />} />
-                </Routes>
+                <AuthProvider>
+                    <Navbar />
+                    <Routes>
+                        <Route path="/" element={<Navigate to={HOME_ROUTE} replace />}/>
+                        <Route path={HOME_ROUTE} element={<Home />} />
+                        <Route path={TRANSACTION_ROUTE} element={
+                            <ProtectedRoute>
+                                <TransactionProvider>
+                                    <Transaction />
+                                </TransactionProvider>
+                            </ProtectedRoute>
+                        } />
+                        <Route path="*" element={<NotFoundPage />} />
+                    </Routes>
+                </AuthProvider>
             </BrowserRouter>
             <Toaster />
         </div>

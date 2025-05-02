@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
-import { API_URL, REFRESH_URL } from "@/constants/endpoints";
+import { API_URL, REFRESH_URL, SIGNING_URL, SIGNUP_URL } from "@/constants/endpoints";
 import { handleError } from "@/components/atoms/toastHandler.ts";
 
 export const api = axios.create({
@@ -31,7 +31,13 @@ api.interceptors.response.use(
             return Promise.reject(error);
         }
 
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        // Obtener la URL completa de la solicitud original
+        const requestUrl = originalRequest.url || '';
+        
+        // No intentar refrescar el token para rutas de autenticación
+        const isAuthRoute = requestUrl.includes(SIGNING_URL) || requestUrl.includes(SIGNUP_URL);
+        
+        if (error.response?.status === 401 && !originalRequest._retry && !isAuthRoute) {
             originalRequest._retry = true;
 
             if (isRefreshing) {

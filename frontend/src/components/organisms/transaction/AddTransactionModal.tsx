@@ -23,6 +23,10 @@ export default function AddTransactionModal({ open, onOpenChange }: TransactionM
         handleError(error);
     };
 
+    const onCancel = () => {
+        onOpenChange(false);
+    };
+
     return (
         <ModalWrapper
             open={open}
@@ -33,6 +37,7 @@ export default function AddTransactionModal({ open, onOpenChange }: TransactionM
             <AddTransactionForm
                 onSuccess={onSuccess}
                 onError={onError}
+                onCancel={onCancel}
             />
         </ModalWrapper>
     );

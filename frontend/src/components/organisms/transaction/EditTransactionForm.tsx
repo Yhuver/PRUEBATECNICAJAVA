@@ -10,9 +10,10 @@ interface TransactionEditFormProps {
     onSuccess: () => void;
     onError: (errorMessage: string) => void;
     loadError?: string | null;
+    onCancel?: () => void;
 }
 
-export default function EditTransactionForm({ onError, onSuccess, loadError }: TransactionEditFormProps) {
+export default function EditTransactionForm({ onError, onSuccess, loadError, onCancel }: TransactionEditFormProps) {
     const navigate = useNavigate();
     const { selectedTransaction, editTransaction } = useTransactionContext();
 
@@ -27,6 +28,14 @@ export default function EditTransactionForm({ onError, onSuccess, loadError }: T
         onSuccess,
         editTransaction
     });
+
+    const handleCancel = () => {
+        if (onCancel) {
+            onCancel();
+        } else {
+            navigate(TRANSACTION_ROUTE);
+        }
+    };
 
     if (!selectedTransaction) return null;
 
@@ -65,7 +74,7 @@ export default function EditTransactionForm({ onError, onSuccess, loadError }: T
                     type="button"
                     variant="outline"
                     className={"flex-1"}
-                    onClick={() => navigate(TRANSACTION_ROUTE)}>
+                    onClick={handleCancel}>
                     Cancelar
                 </Button>
             </div>
